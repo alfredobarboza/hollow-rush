@@ -9,7 +9,7 @@ fs.readFile('pixi-test/index.html', function (err, html) {
     if (err) throw err;
 
     http.createServer(function(request, response) {  
-        response.writeHeader(200, {"Content-Type": "text/html"});  
+        response.writeHeader(200, {"Content-Type": "text/html",'Cache-Control': 'no-cache'});  
         response.write(html);  
         response.end();  
     }).listen(PORT);
