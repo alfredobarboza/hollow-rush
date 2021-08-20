@@ -4,7 +4,7 @@
   "description": "hollow-rush game ",
   "main": "index.js",
   "dependencies": {
-    "http-server": "^13.0.0"
+    "pixi.js": "^6.1.2"
   },
   "devDependencies": {},
   "scripts": {
