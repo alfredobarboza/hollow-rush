@@ -4,6 +4,8 @@
   "description": "hollow-rush game ",
   "main": "index.js",
   "dependencies": {
+    "express": "^4.17.1",
+    "path": "^0.12.7",
     "pixi.js": "^6.1.2"
   },
   "devDependencies": {},

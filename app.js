@@ -1,16 +1,14 @@
-const http = require('http');
-const fs = require('fs');
+const express = require('express');
+const path = require('path');
+const app = express();
+const port = process.env.PORT || 3000;
 
-const hostname = '127.0.0.1';
-const PORT = 3000;
-
-fs.readFile('pixi-test/index.html', function (err, html) {
-
-    if (err) throw err;
-
-    http.createServer(function(request, response) {  
-        response.writeHeader(200, {"Content-Type": "text/html",'Cache-Control': 'no-cache'});  
-        response.write(html);  
-        response.end();  
-    }).listen(PORT);
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'pixi-test/index.html'));
 });
+
+// serve static images for sprites folder
+app.use('/sprites', express.static(path.join(__dirname, 'pixi-test/sprites')));
+
+app.listen(port);
+console.log('Server started at http://localhost:' + port);
