@@ -1,0 +1,26 @@
+{
+  "name": "hollow-rush",
+  "version": "1.0.0",
+  "description": "hollow-rush game ",
+  "main": "index.js",
+  "dependencies": {
+    "http-server": "^13.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alfredobarboza/hollow-rush.git"
+  },
+  "keywords": [
+    "game"
+  ],
+  "author": "Patricio Balzano - Alfredo Barboza",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alfredobarboza/hollow-rush/issues"
+  },
+  "homepage": "https://github.com/alfredobarboza/hollow-rush#readme"
+}
