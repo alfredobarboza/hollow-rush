@@ -12,27 +12,47 @@ app.renderer.view.style.padding = 0;
 // Loader
 const loader = Loader.shared;
 
+const moveCharacter = (character, frameMap, direction) => {
+  const isHorizontal = ['left', 'right'].includes(direction);
+  const isPositive = ['right', 'down'].includes(direction);
+
+  // detect the range of frames for the char direction
+  let frame = frameMap[direction];
+  frame.current = frame.current < frame.max ? frame.current + 1 : frame.min;
+
+  // move the character to the correct direction and update animation frame
+  const axis = isHorizontal ? 'x' : 'y';
+  const newPos = isPositive ? character.position[axis] + 5 : character.position[axis] - 5;
+  character.position[axis] = newPos;
+  character.gotoAndPlay(frame.current);
+}
+
 loader.add('spritesheet', 'assets/default-char.json').load((loader, resources) => {
+  console.log('resources:', resources);
   const textures = Object.values(resources?.spritesheet?.textures);
   const defaultChar = new AnimatedSprite(textures);
   defaultChar.autoUpdate = false;
-  defaultChar.on('mouseMove', () => {
-    console.log('#tecla');
-  })
-  console.log('#defaultChar:', defaultChar);
+
+  let frameMap = { 
+    right: { current: 8, min: 8, max: 11 }, 
+    left: { current: 4, min: 4, max: 7 }, 
+    down: { current: 0, min: 0, max: 3 }, 
+    up: { current: 12, min: 12, max: 15 } 
+  };
+
   document.addEventListener('keydown', e => {
     switch(e.key) {
       case 'ArrowRight':
-        defaultChar.position.x += 5;
+        moveCharacter(defaultChar, frameMap, 'right');
         break;
       case 'ArrowLeft':
-        defaultChar.position.x -= 5;
+        moveCharacter(defaultChar, frameMap, 'left');
         break;
       case 'ArrowDown':
-        defaultChar.position.y += 5;
+        moveCharacter(defaultChar, frameMap, 'down');
         break;
       case 'ArrowUp':
-        defaultChar.position.y -= 5;
+        moveCharacter(defaultChar, frameMap, 'up');
         break;
       default:
         console.log('pelotudo ponete las manos');
@@ -40,12 +60,10 @@ loader.add('spritesheet', 'assets/default-char.json').load((loader, resources) =
     }
   });
 
-  defaultChar.animationSpeed = 0.1;
+  defaultChar.animationSpeed = 0.05;
   app.stage.addChild(defaultChar);
 
   defaultChar.interactive = true;
-
+  defaultChar.updateAnchor = true;
   defaultChar.play();
 });
-
-
