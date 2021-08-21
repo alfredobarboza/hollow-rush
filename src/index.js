@@ -1,4 +1,5 @@
-import { Application, Sprite, Loader, Texture, AnimatedSprite } from 'pixi.js';
+import { Application, Loader } from 'pixi.js';
+import AnimatedCharacter from './AnimatedCharacter';
 
 // Create the application helper and add its render target to the page
 const app = new Application({ width: 640, height: 360, antialias: true });
@@ -30,40 +31,16 @@ const moveCharacter = (character, frameMap, direction) => {
 loader.add('spritesheet', 'assets/default-char.json').load((loader, resources) => {
   console.log('resources:', resources);
   const textures = Object.values(resources?.spritesheet?.textures);
-  const defaultChar = new AnimatedSprite(textures);
-  defaultChar.autoUpdate = false;
-
-  let frameMap = { 
-    right: { current: 8, min: 8, max: 11 }, 
-    left: { current: 4, min: 4, max: 7 }, 
-    down: { current: 0, min: 0, max: 3 }, 
-    up: { current: 12, min: 12, max: 15 } 
-  };
-
-  document.addEventListener('keydown', e => {
-    switch(e.key) {
-      case 'ArrowRight':
-        moveCharacter(defaultChar, frameMap, 'right');
-        break;
-      case 'ArrowLeft':
-        moveCharacter(defaultChar, frameMap, 'left');
-        break;
-      case 'ArrowDown':
-        moveCharacter(defaultChar, frameMap, 'down');
-        break;
-      case 'ArrowUp':
-        moveCharacter(defaultChar, frameMap, 'up');
-        break;
-      default:
-        console.log('pelotudo ponete las manos');
-        break;
+  const defaultChar = new AnimatedCharacter({
+    textures,
+    frameMap: { 
+      right: { current: 8, min: 8, max: 11 }, 
+      left: { current: 4, min: 4, max: 7 }, 
+      down: { current: 0, min: 0, max: 3 }, 
+      up: { current: 12, min: 12, max: 15 } 
     }
   });
 
-  defaultChar.animationSpeed = 0.05;
   app.stage.addChild(defaultChar);
-
-  defaultChar.interactive = true;
-  defaultChar.updateAnchor = true;
   defaultChar.play();
 });
