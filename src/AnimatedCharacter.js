@@ -1,6 +1,6 @@
 import { AnimatedSprite } from "pixi.js";
 
-export default class Character extends AnimatedSprite {
+export default class AnimatedCharacter extends AnimatedSprite {
   constructor(options) {
     super(options.textures);
 
