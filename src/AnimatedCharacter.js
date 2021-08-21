@@ -10,7 +10,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.frameMap = options.frameMap;
 
     document.addEventListener('keydown', e => {
-      switch(e.key) {
+      switch (e.key) {
         case 'ArrowRight':
           this.move('right');
           break;
@@ -29,19 +29,29 @@ export default class AnimatedCharacter extends AnimatedSprite {
       }
     });
   }
-  
+
   move = (direction) => {
     const isHorizontal = ['left', 'right'].includes(direction);
     const isPositive = ['right', 'down'].includes(direction);
-  
+
     // detect the range of frames for the char direction
     let frame = this.frameMap[direction];
     frame.current = frame.current < frame.max ? frame.current + 1 : frame.min;
-  
+
     // move the character to the correct direction and update animation frame
     const axis = isHorizontal ? 'x' : 'y';
     const newPos = isPositive ? this.position[axis] + 5 : this.position[axis] - 5;
-    this.position[axis] = newPos;
+
     this.gotoAndPlay(frame.current);
+
+    if ((isHorizontal && newPos < 0) || (isHorizontal && newPos > 607)) {
+      console.log('no mover');
+      return;
+    } else if ((!isHorizontal && newPos < 0) || (!isHorizontal && newPos > 425)) {
+      console.log('no mover');
+      return;
+    } else {
+      this.position[axis] = newPos;
+    }
   }
 }

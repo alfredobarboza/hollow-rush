@@ -2,7 +2,7 @@ import { Application, Loader } from 'pixi.js';
 import AnimatedCharacter from './AnimatedCharacter';
 
 // Create the application helper and add its render target to the page
-const app = new Application({ width: 640, height: 360, antialias: true });
+const app = new Application({ width: 640, height: 480, antialias: true });
 document.body.appendChild(app.view);
 
 app.renderer.resize(640, 480);
@@ -10,10 +10,11 @@ app.renderer.view.style.position = 'absolute';
 app.renderer.view.style.margin = 0;
 app.renderer.view.style.padding = 0;
 
+
 // Loader
 const loader = Loader.shared;
 
-loader.add('spritesheet', 'assets/default-char.json').load((loader, resources) => {
+loader.add('spritesheet', 'assets/knight.json').load((loader, resources) => {
   console.log('resources:', resources);
   const textures = Object.values(resources?.spritesheet?.textures);
   const defaultChar = new AnimatedCharacter({
