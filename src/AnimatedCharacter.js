@@ -3,11 +3,11 @@ import { AnimatedSprite, Ticker } from "pixi.js";
 const MAP_WIDTH = 600;
 const MAP_HEIGHT = 400;
 const ACCELERATION = 1;
-const DECELERATION = 1;
+const DECELERATION = 0.6; // percentage (0 -> 1)
 
 /**
  * TODO:
- * check which properties to keep in char
+ * check which properties to keep in char and/or which to get from options obj
  * remove map dimensions from here
  * deceleration
  * refactor move method out of bounds & if nesting
@@ -22,8 +22,8 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.animationSpeed = 0.05;
     this.interactive = true;
     this.frameMap = options.frameMap;
-    this.speed = 0;
-    this.maxspeed = 30;
+    this.speed = 5; // starting speed (get from options)
+    this.maxspeed = 20; // max speed (get from options)
 
     document.addEventListener('keydown', e => {
       switch (e.key) {
@@ -47,7 +47,10 @@ export default class AnimatedCharacter extends AnimatedSprite {
 
     // TODO: Calculate inverse acceleration
     document.addEventListener('keyup', e => {
-      // console.log('decelerate');     
+      // console.log('decelerate');
+      if (['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'].includes(e.key)) {
+        this.speed = Math.floor(this.speed * (1 - DECELERATION));
+      }
     });
 
   }
@@ -76,9 +79,9 @@ export default class AnimatedCharacter extends AnimatedSprite {
 
       if (!outOfBounds) {
         const testpos = this.position[axis] + this.addAcceleration();
-        //console.log('testpos:', testpos);
+        console.log('testpos:', testpos);
         const newAxisPos = testpos >= maxBound ? maxBound : testpos;
-        //console.log('newPos (+):', newAxisPos);
+        console.log('newPos (+):', newAxisPos);
 
         this.position[axis] = newAxisPos;
       }
@@ -87,7 +90,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
       if (!outOfBounds) {
         const testpos = this.position[axis] - this.addAcceleration();
         const newAxisPos = testpos <= 0 ? 0 : testpos;
-        //console.log('newPos (-):', newAxisPos);
+        console.log('newPos (-):', newAxisPos);
 
         this.position[axis] = newAxisPos;
       }
@@ -101,10 +104,10 @@ export default class AnimatedCharacter extends AnimatedSprite {
     // increase speed if less than max speed
 
     if (this.speed < this.maxspeed) {
-      this.speed += this.acceleration * this.ticker.deltaTime;
+      this.speed += ACCELERATION * this.ticker.deltaTime;
     }
 
-    //console.log('will add accel:', this.speed);
+    console.log('will add accel:', this.speed);
 
     return this.speed;
   }
@@ -112,11 +115,11 @@ export default class AnimatedCharacter extends AnimatedSprite {
   // TODO: Move to a canvas related class/module
   checkBoundaries = (horizontal, nextCoordinates) => {
     if ((horizontal && nextCoordinates < 0) || (horizontal && nextCoordinates > MAP_WIDTH)) {
-      //console.log('out of bounds');
+      console.log('out of bounds');
       this.speed = 0;
       return true;
     } else if ((!horizontal && nextCoordinates < 0) || (!horizontal && nextCoordinates > MAP_HEIGHT)) {
-      //console.log('out of bounds');
+      console.log('out of bounds');
       this.speed = 0;
       return true;
     } else {
