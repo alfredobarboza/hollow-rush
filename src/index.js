@@ -15,7 +15,7 @@ app.renderer.view.style.padding = 0;
 const loader = Loader.shared;
 
 loader.add('spritesheet', 'assets/knight.json').load((loader, resources) => {
-  console.log('resources:', resources);
+  //console.log('resources:', resources);
   const textures = Object.values(resources?.spritesheet?.textures);
   const defaultChar = new AnimatedCharacter({
     textures,
