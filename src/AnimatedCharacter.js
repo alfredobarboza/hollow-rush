@@ -2,7 +2,17 @@ import { AnimatedSprite, Ticker } from "pixi.js";
 
 const MAP_WIDTH = 600;
 const MAP_HEIGHT = 400;
+const ACCELERATION = 1;
+const DECELERATION = 1;
 
+/**
+ * TODO:
+ * check which properties to keep in char
+ * remove map dimensions from here
+ * deceleration
+ * refactor move method out of bounds & if nesting
+ * extract generic like accel calc to X outside of this
+ */
 export default class AnimatedCharacter extends AnimatedSprite {
   constructor(options) {
     super(options.textures);
@@ -13,10 +23,6 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.interactive = true;
     this.frameMap = options.frameMap;
     this.speed = 0;
-    this.acceleration = 1;
-    this.posAcceleration;
-    this.negAcceleration;
-    this.deceleration = 1;
     this.maxspeed = 30;
 
     document.addEventListener('keydown', e => {
@@ -46,7 +52,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
 
   }
 
-  move = (direction) => {
+  move = direction => {
     const isHorizontal = ['left', 'right'].includes(direction);
     const isPositive = ['right', 'down'].includes(direction);
 
@@ -82,7 +88,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
         const testpos = this.position[axis] - this.addAcceleration();
         const newAxisPos = testpos <= 0 ? 0 : testpos;
         //console.log('newPos (-):', newAxisPos);
-        
+
         this.position[axis] = newAxisPos;
       }
     }

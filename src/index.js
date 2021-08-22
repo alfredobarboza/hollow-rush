@@ -1,18 +1,19 @@
-import { Application, Loader } from 'pixi.js';
+import { Application, Loader, Renderer } from 'pixi.js';
 import AnimatedCharacter from './AnimatedCharacter';
 
 // Create the application helper and add its render target to the page
 const app = new Application({ width: 640, height: 480, antialias: true });
 document.body.appendChild(app.view);
+console.log(app.view.height);
 
 app.renderer.resize(640, 480);
 app.renderer.view.style.position = 'absolute';
 app.renderer.view.style.margin = 0;
 app.renderer.view.style.padding = 0;
 
-
 // Loader
 const loader = Loader.shared;
+
 
 loader.add('spritesheet', 'assets/knight.json').load((loader, resources) => {
   //console.log('resources:', resources);
