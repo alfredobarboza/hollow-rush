@@ -1,5 +1,16 @@
 import { Application, Loader } from 'pixi.js';
 import AnimatedCharacter from './AnimatedCharacter';
+import SoundModule from './modules/SoundModule';
+import DataModule from './modules/DataModule';
+
+//Create DataModule class
+const data = new DataModule();
+
+// Create the sound module to load 'sound' obj with assets
+// This can be used globally
+// Here we will add more options as we start needing
+const sound_options = { audioList: data.audioUrls};
+const sound = new SoundModule(sound_options);
 
 // Create the application helper and add its render target to the page
 const app = new Application({ width: 640, height: 480, antialias: true });
@@ -12,7 +23,6 @@ app.renderer.view.style.padding = 0;
 
 // Loader
 const loader = Loader.shared;
-
 
 loader.add('spritesheet', 'assets/knight.json').load((loader, resources) => {
   //console.log('resources:', resources);
