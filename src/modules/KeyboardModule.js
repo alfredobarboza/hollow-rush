@@ -1,4 +1,6 @@
+import { sound } from '@pixi/sound';
 import CollisionModule from './CollisionModule';
+import SoundModule from './SoundModule';
 
 const getKeyValues = wasd => ({
   RIGHT: wasd ? 'd' : 'ArrowRight',
@@ -16,6 +18,8 @@ export default class KeyboardModule {
       const mapBoundsCollision = CollisionModule.contain(character, currentMap, true);
 
       const KEYS = getKeyValues(wasd);
+      // Add walking sound
+      //SoundModule.play('test2');
       switch (e.key) {
         case KEYS.RIGHT:
           if (!mapBoundsCollision?.has('right') && !mapCfg.collision[currentTile + 1]) {

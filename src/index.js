@@ -8,15 +8,6 @@ import DataModule from './modules/DataModule';
 
 settings.SCALE_MODE = SCALE_MODES.NEAREST;
 
-//Create DataModule class
-const data = new DataModule();
-
-// Create the sound module to load 'sound' obj with assets
-// This can be used globally
-// Here we will add more options as we start needing
-const sound_options = { audioList: data.audioUrls};
-const sound = new SoundModule(sound_options);
-
 const keyboard = new KeyboardModule();
 
 // Create the application helper and add its render target to the page
@@ -51,6 +42,8 @@ app.loader
 
     firstMap.addChild(defaultChar);
     firstMap.load();
+
+    //SoundModule.play('intro');
 
     app.stage.addChild(firstMap);
   });
