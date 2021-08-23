@@ -1,6 +1,6 @@
 {
   "name": "hollow-rush",
-  "version": "1.0.0",
+  "version": "0.0.1alpha",
   "description": "hollow-rush game ",
   "main": "index.js",
   "dependencies": {
@@ -12,7 +12,6 @@
     "html-webpack-plugin": "^5.3.2",
     "path": "^0.12.7",
     "pixi.js": "^6.1.2",
-    "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^5.51.1",
     "webpack-cli": "^4.8.0",
     "webpack-dev-server": "^4.0.0"

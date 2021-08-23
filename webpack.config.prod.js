@@ -1,6 +1,7 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   mode: 'production',
@@ -14,22 +15,23 @@ module.exports = {
     }]
   },
   optimization: {
-    minimizer: [new UglifyJSPlugin({
-      uglifyOptions: {
-        output: { comments: false }
-      }
-    })]
+    minimize: true,
+    minimizer: [new TerserPlugin()],
   },
   plugins: [
-    new CopyWebpackPlugin([{
-      from: 'build/assets',
-      to: 'assets'
-    }]),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'build/assets', to: 'assets' }
+      ]
+    }),
     new HTMLWebpackPlugin({
       template: 'build/index.html',
       filename: 'index.html',
       hash: true,
       minify: false
+    }),
+    new webpack.DefinePlugin({
+      "APP_VERSION": JSON.stringify(process.env.npm_package_version)
     })
   ]
 };
