@@ -1,17 +1,11 @@
 import { AnimatedSprite, Ticker } from "pixi.js";
 
-const MAP_WIDTH = 600;
-const MAP_HEIGHT = 400;
-const ACCELERATION = 1;
-const DECELERATION = 0.6; // percentage (0 -> 1)
+const BASE_ACCELERATION = 1;
 
 /**
  * TODO:
  * check which properties to keep in char and/or which to get from options obj
- * remove map dimensions from here
- * deceleration
- * refactor move method out of bounds & if nesting
- * extract generic like accel calc to X outside of this
+ * extract generic like accel calc to cfg file outside of this
  */
 export default class AnimatedCharacter extends AnimatedSprite {
   constructor(options) {
@@ -19,111 +13,63 @@ export default class AnimatedCharacter extends AnimatedSprite {
 
     this.ticker = Ticker.shared;
     this.autoUpdate = false;
-    this.animationSpeed = 0.05;
     this.interactive = true;
     this.frameMap = options.frameMap;
-    this.speed = 5; // starting speed (get from options)
-    this.maxspeed = 20; // max speed (get from options)
-
-    document.addEventListener('keydown', e => {
-      switch (e.key) {
-        case 'ArrowRight':
-          this.move('right');
-          break;
-        case 'ArrowLeft':
-          this.move('left');
-          break;
-        case 'ArrowDown':
-          this.move('down');
-          break;
-        case 'ArrowUp':
-          this.move('up');
-          break;
-        default:
-          console.log('pelotudo ponete las manos');
-          break;
-      }
-    });
-
-    // TODO: Calculate inverse acceleration
-    document.addEventListener('keyup', e => {
-      // console.log('decelerate');
-      if (['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'].includes(e.key)) {
-        this.speed = Math.floor(this.speed * (1 - DECELERATION));
-      }
-    });
-
+    this.speed = 0; // starting speed
+    this.maxSpeed = 1; // max speed - tiles per second
+    this.speedMultiplier = options.speedMultiplier || 32; // depends on tile size - default: 32
   }
 
-  move = direction => {
-    const isHorizontal = ['left', 'right'].includes(direction);
-    const isPositive = ['right', 'down'].includes(direction);
+  getSpeed() {
+    return this.speed;
+  }
 
+  setSpeed(speed) {
+    this.speed = speed;
+  }
+
+  animate(direction) {
     // detect the range of frames for the char direction
     let frame = this.frameMap[direction];
     frame.current = frame.current < frame.max ? frame.current + 1 : frame.min;
 
-    // move the character to the correct direction and update animation frame
-    const axis = isHorizontal ? 'x' : 'y';
-    const newPos = isPositive ? this.position[axis] + 1 : this.position[axis] - 1;
-
-
-    // check for canvas boundary
-    let outOfBounds = this.checkBoundaries(isHorizontal, newPos);
-
-    //console.log('outOfBounds?', outOfBounds);
-
-    if (isPositive) {
-
-      const maxBound = isHorizontal ? MAP_WIDTH : MAP_HEIGHT;
-
-      if (!outOfBounds) {
-        const testpos = this.position[axis] + this.addAcceleration();
-        console.log('testpos:', testpos);
-        const newAxisPos = testpos >= maxBound ? maxBound : testpos;
-        console.log('newPos (+):', newAxisPos);
-
-        this.position[axis] = newAxisPos;
-      }
-      //this.position[axis] = outOfBounds ? this.position[axis] : newPos + this.addAcceleration();  
-    } else {
-      if (!outOfBounds) {
-        const testpos = this.position[axis] - this.addAcceleration();
-        const newAxisPos = testpos <= 0 ? 0 : testpos;
-        console.log('newPos (-):', newAxisPos);
-
-        this.position[axis] = newAxisPos;
-      }
-    }
-
     this.gotoAndPlay(frame.current);
   }
 
-  // TODO: Put in a Utils
-  addAcceleration = () => {
-    // increase speed if less than max speed
+  move(direction) {
+    //console.log('speed:', this.speed);
+    const isHorizontal = ['left', 'right'].includes(direction);
+    const isPositive = ['right', 'down'].includes(direction);
 
-    if (this.speed < this.maxspeed) {
-      this.speed += ACCELERATION * this.ticker.deltaTime;
-    }
+    // move the character to the correct direction and update animation frame
+    const axis = isHorizontal ? 'x' : 'y';
+    const acceleration = this.getAcceleration(this.speed, this.maxSpeed * this.speedMultiplier);
+    //console.log('current pos:', this.position[axis]);
+    const newPosition = this.calculateDisplacement(this.position[axis], this.speed, acceleration, isPositive);
+    //console.log('newPosition:', newPosition);
 
-    console.log('will add accel:', this.speed);
-
-    return this.speed;
+    this.position[axis] = newPosition;
+    this.speed += acceleration;
   }
 
-  // TODO: Move to a canvas related class/module
-  checkBoundaries = (horizontal, nextCoordinates) => {
-    if ((horizontal && nextCoordinates < 0) || (horizontal && nextCoordinates > MAP_WIDTH)) {
-      console.log('out of bounds');
-      this.speed = 0;
-      return true;
-    } else if ((!horizontal && nextCoordinates < 0) || (!horizontal && nextCoordinates > MAP_HEIGHT)) {
-      console.log('out of bounds');
-      this.speed = 0;
-      return true;
+  calculateDisplacement(currentPosition, velocity, acceleration, positive) {
+    const displacement = velocity + acceleration;
+
+    let newPosition;
+    if (positive) {
+      newPosition = currentPosition + displacement;
     } else {
-      return false;
+      newPosition = currentPosition - displacement;
     }
+
+    return newPosition;
+  }
+
+  getAcceleration(speed, maxSpeed) {
+    // no acceleration if already at max speed
+    if (speed >= maxSpeed) return 0;
+
+    // acceleration formula: Δv / Δt; return always positive, with no decimals
+    return Math.abs(Math.ceil((maxSpeed - speed) / (BASE_ACCELERATION * this.ticker.deltaTime)));
   }
 }
