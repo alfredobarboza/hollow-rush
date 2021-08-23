@@ -4,7 +4,6 @@ import TileMap from './TileMap';
 import { maps } from './config';
 import KeyboardModule from './modules/KeyboardModule';
 import SoundModule from './modules/SoundModule';
-import DataModule from './modules/DataModule';
 
 settings.SCALE_MODE = SCALE_MODES.NEAREST;
 
@@ -19,8 +18,8 @@ app.renderer.view.style.margin = 0;
 app.renderer.view.style.padding = 0;
 
 app.loader
-  .add('tileset', 'assets/map_tileset_32x32.png')
-  .add('spritesheet', 'assets/knight.json')
+  .add('tileset', 'assets/maps/map_tileset_32x32.png')
+  .add('spritesheet', 'assets/chars/knight.json')
   .load((loader, resources) => {
 
     const firstMap = new TileMap({ config: maps.FIRST_ARENA, tileset: resources.tileset.texture });

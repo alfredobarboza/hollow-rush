@@ -1,4 +1,3 @@
-import { sound } from '@pixi/sound';
 import CollisionModule from './CollisionModule';
 import SoundModule from './SoundModule';
 

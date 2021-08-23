@@ -16,10 +16,10 @@ npm start
 
 Development build:
 ```
-npm run build
+npm run build:dev
 ```
 
 Production build:
 ```
-npm run production
+npm run build:prod
 ```
