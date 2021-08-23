@@ -1,17 +1,23 @@
-import { sound } from '@pixi/sound';
+import { Howl, Howler } from 'howler';
+import DataModule from './DataModule';
 
-const AUDIO_FOLDER = '/assets/';
-const FILE_EXT = '.wav';
+class SoundModule {
+  constructor() {
+    // add all audio assets to sound obj to be consumed
+    this.sounds = DataModule.audioCfg.map(sound => {
+      const audio = Object.assign(new Howl(sound), { name: sound.name });
+      return audio;
+    });
 
-export default class SoundModule {
-    constructor(options) {
-        this.urls = options.audioList;
+  }
 
-        // add all audio assets to sound obj to be consumed
-        // this sound variable is global
-        this.urls.forEach((curr) => {
-            sound.add(curr, AUDIO_FOLDER + curr + FILE_EXT);
-            sound.play(curr);
-        });
+  play(audioName) {
+    const audio = this.sounds.find(sound => sound.name === audioName);
+    if (audio) {
+      audio.play();
     }
+  }
+
 }
+
+export default new SoundModule();
