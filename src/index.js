@@ -3,8 +3,19 @@ import AnimatedCharacter from './AnimatedCharacter';
 import TileMap from './TileMap';
 import { maps } from './config';
 import registerKeyboardMovement from './keyboardMovement';
+import SoundModule from './modules/SoundModule';
+import DataModule from './modules/DataModule';
 
 settings.SCALE_MODE = SCALE_MODES.NEAREST;
+
+//Create DataModule class
+const data = new DataModule();
+
+// Create the sound module to load 'sound' obj with assets
+// This can be used globally
+// Here we will add more options as we start needing
+const sound_options = { audioList: data.audioUrls};
+const sound = new SoundModule(sound_options);
 
 // Create the application helper and add its render target to the page
 const app = new Application({ width: 1024, height: 768, antialias: true });
