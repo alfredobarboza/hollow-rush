@@ -84,7 +84,7 @@ class CollisionModule {
         configurable: true
       });
     }
-    
+
     // Add a Boolean `_bumpPropertiesAdded` property to the sprite to flag it as having these new properties
     sprite._bumpPropertiesAdded = true;
   }
@@ -92,9 +92,9 @@ class CollisionModule {
   hitTestPoint(point, sprite) {
     //Add collision properties
     if (!sprite._bumpPropertiesAdded) this.addCollisionProperties(sprite);
-    
+
     let shape, left, right, top, bottom, vx, vy, magnitude, hit;
-    
+
     //Find out if the sprite is rectangular or circular depending
     //on whether it has a `radius` property
     if (sprite.radius) {
@@ -102,7 +102,7 @@ class CollisionModule {
     } else {
       shape = "rectangle";
     }
-    
+
     //Rectangle
     if (shape === "rectangle") {
       //Get the position of the sprite's edges
@@ -110,11 +110,11 @@ class CollisionModule {
       right = sprite.x + sprite.width - sprite.xAnchorOffset;
       top = sprite.y - sprite.yAnchorOffset;
       bottom = sprite.y + sprite.height - sprite.yAnchorOffset;
-  
+
       //Find out if the point is intersecting the rectangle
       hit = point.x > left && point.x < right && point.y > top && point.y < bottom;
     }
-    
+
     //Circle
     if (shape === "circle") {
       //Find the distance between the point and the
@@ -122,12 +122,12 @@ class CollisionModule {
       vx = point.x - sprite.x - sprite.width / 2 + sprite.xAnchorOffset;
       vy = point.y - sprite.y - sprite.height / 2 + sprite.yAnchorOffset;
       magnitude = Math.sqrt(vx * vx + vy * vy);
-  
+
       //The point is intersecting the circle if the magnitude
       //(distance) is less than the circle's radius
       hit = magnitude < sprite.radius;
     }
-    
+
     //`hit` will be either `true` or `false`
     return hit;
   }
@@ -136,50 +136,9 @@ class CollisionModule {
     //Add collision properties
     if (!c1._bumpPropertiesAdded) this.addCollisionProperties(c1);
     if (!c2._bumpPropertiesAdded) this.addCollisionProperties(c2);
-    
-    let vx, vy, magnitude, combinedRadii, hit;
-    
-    //Calculate the vector between the circles’ center points
-    if (global) {
-        //Use global coordinates
-        vx = c2.gx + c2.width / 2 - c2.xAnchorOffset - (c1.gx + c1.width / 2 - c1.xAnchorOffset);
-        vy = c2.gy + c2.width / 2 - c2.yAnchorOffset - (c1.gy + c1.width / 2 - c1.yAnchorOffset);
-    } else {
-        //Use local coordinates
-        vx = c2.x + c2.width / 2 - c2.xAnchorOffset - (c1.x + c1.width / 2 - c1.xAnchorOffset);
-        vy = c2.y + c2.width / 2 - c2.yAnchorOffset - (c1.y + c1.width / 2 - c1.yAnchorOffset);
-    }
-    
-    //Find the distance between the circles by calculating
-    //the vector's magnitude (how long the vector is)
-    magnitude = Math.sqrt(vx * vx + vy * vy);
-    
-    //Add together the circles' total radii
-    combinedRadii = c1.radius + c2.radius;
-    
-    //Set `hit` to `true` if the distance between the circles is
-    //less than their `combinedRadii`
-    hit = magnitude < combinedRadii;
-    
-    //`hit` will be either `true` or `false`
-    return hit;
-  }
 
-  circleCollision(c1, c2, bounce, global) {
-    //Add collision properties
-    if (!c1._bumpPropertiesAdded) this.addCollisionProperties(c1);
-    if (!c2._bumpPropertiesAdded) this.addCollisionProperties(c2);
-    
-    let magnitude,
-      combinedRadii,
-      overlap,
-      vx,
-      vy,
-      dx,
-      dy,
-      s = {},
-      hit = false;
-    
+    let vx, vy, magnitude, combinedRadii, hit;
+
     //Calculate the vector between the circles’ center points
     if (global) {
       //Use global coordinates
@@ -190,22 +149,63 @@ class CollisionModule {
       vx = c2.x + c2.width / 2 - c2.xAnchorOffset - (c1.x + c1.width / 2 - c1.xAnchorOffset);
       vy = c2.y + c2.width / 2 - c2.yAnchorOffset - (c1.y + c1.width / 2 - c1.yAnchorOffset);
     }
-    
+
     //Find the distance between the circles by calculating
     //the vector's magnitude (how long the vector is)
     magnitude = Math.sqrt(vx * vx + vy * vy);
-    
+
+    //Add together the circles' total radii
+    combinedRadii = c1.radius + c2.radius;
+
+    //Set `hit` to `true` if the distance between the circles is
+    //less than their `combinedRadii`
+    hit = magnitude < combinedRadii;
+
+    //`hit` will be either `true` or `false`
+    return hit;
+  }
+
+  circleCollision(c1, c2, bounce, global) {
+    //Add collision properties
+    if (!c1._bumpPropertiesAdded) this.addCollisionProperties(c1);
+    if (!c2._bumpPropertiesAdded) this.addCollisionProperties(c2);
+
+    let magnitude,
+      combinedRadii,
+      overlap,
+      vx,
+      vy,
+      dx,
+      dy,
+      s = {},
+      hit = false;
+
+    //Calculate the vector between the circles’ center points
+    if (global) {
+      //Use global coordinates
+      vx = c2.gx + c2.width / 2 - c2.xAnchorOffset - (c1.gx + c1.width / 2 - c1.xAnchorOffset);
+      vy = c2.gy + c2.width / 2 - c2.yAnchorOffset - (c1.gy + c1.width / 2 - c1.yAnchorOffset);
+    } else {
+      //Use local coordinates
+      vx = c2.x + c2.width / 2 - c2.xAnchorOffset - (c1.x + c1.width / 2 - c1.xAnchorOffset);
+      vy = c2.y + c2.width / 2 - c2.yAnchorOffset - (c1.y + c1.width / 2 - c1.yAnchorOffset);
+    }
+
+    //Find the distance between the circles by calculating
+    //the vector's magnitude (how long the vector is)
+    magnitude = Math.sqrt(vx * vx + vy * vy);
+
     //Add together the circles' combined half-widths
     combinedRadii = c1.radius + c2.radius;
-    
+
     //Figure out if there's a collision
     if (magnitude < combinedRadii) {
       //Yes, a collision is happening
       hit = true;
-  
+
       //Find the amount of overlap between the circles
       overlap = combinedRadii - magnitude;
-  
+
       //Add some "quantum padding". This adds a tiny amount of space
       //between the circles to reduce their surface tension and make
       //them more slippery. "0.3" is a good place to start but you might
@@ -214,18 +214,18 @@ class CollisionModule {
       //and they could start to jitter if they're jammed together
       var quantumPadding = 0.3;
       overlap += quantumPadding;
-  
+
       //Normalize the vector
       //These numbers tell us the direction of the collision
       dx = vx / magnitude;
       dy = vy / magnitude;
-  
+
       //Move circle 1 out of the collision by multiplying
       //the overlap with the normalized vector and subtract it from
       //circle 1's position
       c1.x -= overlap * dx;
       c1.y -= overlap * dy;
-  
+
       //Bounce
       if (bounce) {
         //Create a collision vector object, `s` to represent the bounce "surface".
@@ -233,7 +233,7 @@ class CollisionModule {
         //(This represents the normal of the distance vector between the circles)
         s.x = vy;
         s.y = -vx;
-    
+
         //Bounce c1 off the surface
         this.bounceOffSurface(c1, s);
       }
@@ -245,7 +245,7 @@ class CollisionModule {
     //Add collision properties
     if (!c1._bumpPropertiesAdded) this.addCollisionProperties(c1);
     if (!c2._bumpPropertiesAdded) this.addCollisionProperties(c2);
-    
+
     let combinedRadii,
       overlap,
       xSide,
@@ -256,11 +256,11 @@ class CollisionModule {
       p2A = {},
       p2B = {},
       hit = false;
-    
+
     //Apply mass, if the circles have mass properties
     c1.mass = c1.mass || 1;
     c2.mass = c2.mass || 1;
-    
+
     //Calculate the vector between the circles’ center points
     if (global) {
       //Use global coordinates
@@ -271,101 +271,101 @@ class CollisionModule {
       s.vx = c2.x + c2.radius - c2.xAnchorOffset - (c1.x + c1.radius - c1.xAnchorOffset);
       s.vy = c2.y + c2.radius - c2.yAnchorOffset - (c1.y + c1.radius - c1.yAnchorOffset);
     }
-    
+
     //Find the distance between the circles by calculating
     //the vector's magnitude (how long the vector is)
     s.magnitude = Math.sqrt(s.vx * s.vx + s.vy * s.vy);
-    
+
     //Add together the circles' combined half-widths
     combinedRadii = c1.radius + c2.radius;
-    
+
     //Figure out if there's a collision
     if (s.magnitude < combinedRadii) {
       //Yes, a collision is happening
       hit = true;
-  
+
       //Find the amount of overlap between the circles
       overlap = combinedRadii - s.magnitude;
-  
+
       //Add some "quantum padding" to the overlap
       overlap += 0.3;
-  
+
       //Normalize the vector.
       //These numbers tell us the direction of the collision
       s.dx = s.vx / s.magnitude;
       s.dy = s.vy / s.magnitude;
-  
+
       //Find the collision vector.
       //Divide it in half to share between the circles, and make it absolute
       s.vxHalf = Math.abs((s.dx * overlap) / 2);
       s.vyHalf = Math.abs((s.dy * overlap) / 2);
-  
+
       //Find the side that the collision is occurring on
       xSide = c1.x > c2.x ? 1 : -1;
       ySide = c1.y > c2.y ? 1 : -1;
-  
+
       //Move c1 out of the collision by multiplying
       //the overlap with the normalized vector and adding it to
       //the circles' positions
       c1.x = c1.x + s.vxHalf * xSide;
       c1.y = c1.y + s.vyHalf * ySide;
-  
+
       //Move c2 out of the collision
       c2.x = c2.x + s.vxHalf * -xSide;
       c2.y = c2.y + s.vyHalf * -ySide;
-  
+
       //1. Calculate the collision surface's properties
-  
+
       //Find the surface vector's left normal
       s.lx = s.vy;
       s.ly = -s.vx;
-  
+
       //2. Bounce c1 off the surface (s)
-  
+
       //Find the dot product between c1 and the surface
       let dp1 = c1.vx * s.dx + c1.vy * s.dy;
-  
+
       //Project c1's velocity onto the collision surface
       p1A.x = dp1 * s.dx;
       p1A.y = dp1 * s.dy;
-  
+
       //Find the dot product of c1 and the surface's left normal (s.lx and s.ly)
       let dp2 = c1.vx * (s.lx / s.magnitude) + c1.vy * (s.ly / s.magnitude);
-  
+
       //Project the c1's velocity onto the surface's left normal
       p1B.x = dp2 * (s.lx / s.magnitude);
       p1B.y = dp2 * (s.ly / s.magnitude);
-  
+
       //3. Bounce c2 off the surface (s)
-  
+
       //Find the dot product between c2 and the surface
       let dp3 = c2.vx * s.dx + c2.vy * s.dy;
-  
+
       //Project c2's velocity onto the collision surface
       p2A.x = dp3 * s.dx;
       p2A.y = dp3 * s.dy;
-  
+
       //Find the dot product of c2 and the surface's left normal (s.lx and s.ly)
       let dp4 = c2.vx * (s.lx / s.magnitude) + c2.vy * (s.ly / s.magnitude);
-  
+
       //Project c2's velocity onto the surface's left normal
       p2B.x = dp4 * (s.lx / s.magnitude);
       p2B.y = dp4 * (s.ly / s.magnitude);
-  
+
       //4. Calculate the bounce vectors
-  
+
       //Bounce c1
       //using p1B and p2A
       c1.bounce = {};
       c1.bounce.x = p1B.x + p2A.x;
       c1.bounce.y = p1B.y + p2A.y;
-  
+
       //Bounce c2
       //using p1A and p2B
       c2.bounce = {};
       c2.bounce.x = p1A.x + p2B.x;
       c2.bounce.y = p1A.y + p2B.y;
-  
+
       //Add the bounce vector to the circles' velocity
       //and add mass if the circle has a mass property
       c1.vx = c1.bounce.x / c1.mass;
@@ -381,9 +381,9 @@ class CollisionModule {
     //Add collision properties
     if (!r1._bumpPropertiesAdded) this.addCollisionProperties(r1);
     if (!r2._bumpPropertiesAdded) this.addCollisionProperties(r2);
-    
+
     let collision, combinedHalfWidths, combinedHalfHeights, overlapX, overlapY, vx, vy;
-    
+
     //Calculate the distance vector
     if (global) {
       vx = r1.gx + Math.abs(r1.halfWidth) - r1.xAnchorOffset - (r2.gx + Math.abs(r2.halfWidth) - r2.xAnchorOffset);
@@ -392,11 +392,11 @@ class CollisionModule {
       vx = r1.x + Math.abs(r1.halfWidth) - r1.xAnchorOffset - (r2.x + Math.abs(r2.halfWidth) - r2.xAnchorOffset);
       vy = r1.y + Math.abs(r1.halfHeight) - r1.yAnchorOffset - (r2.y + Math.abs(r2.halfHeight) - r2.yAnchorOffset);
     }
-    
+
     //Figure out the combined half-widths and half-heights
     combinedHalfWidths = Math.abs(r1.halfWidth) + Math.abs(r2.halfWidth);
     combinedHalfHeights = Math.abs(r1.halfHeight) + Math.abs(r2.halfHeight);
-    
+
     //Check whether vx is less than the combined half widths
     if (Math.abs(vx) < combinedHalfWidths) {
       //A collision might be occurring!
@@ -406,7 +406,7 @@ class CollisionModule {
         //Find out the size of the overlap on both the X and Y axes
         overlapX = combinedHalfWidths - Math.abs(vx);
         overlapY = combinedHalfHeights - Math.abs(vy);
-    
+
         //The collision has occurred on the axis with the
         //*smallest* amount of overlap. var's figure out which
         //axis that is
@@ -447,7 +447,7 @@ class CollisionModule {
         }
       }
     }
-    
+
     //Return the collision string. it will be either "top", "right",
     //"bottom", or "left" depending on which side of r1 is touching r2.
     return collision;
@@ -457,12 +457,12 @@ class CollisionModule {
     //Add collision properties
     if (!r1._bumpPropertiesAdded) this.addCollisionProperties(r1);
     if (!r2._bumpPropertiesAdded) this.addCollisionProperties(r2);
-    
+
     let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
-    
+
     //A variable to determine whether there's a collision
     hit = false;
-    
+
     //Calculate the distance vector
     if (global) {
       vx = r1.gx + Math.abs(r1.halfWidth) - r1.xAnchorOffset - (r2.gx + Math.abs(r2.halfWidth) - r2.xAnchorOffset);
@@ -471,11 +471,11 @@ class CollisionModule {
       vx = r1.x + Math.abs(r1.halfWidth) - r1.xAnchorOffset - (r2.x + Math.abs(r2.halfWidth) - r2.xAnchorOffset);
       vy = r1.y + Math.abs(r1.halfHeight) - r1.yAnchorOffset - (r2.y + Math.abs(r2.halfHeight) - r2.yAnchorOffset);
     }
-    
+
     //Figure out the combined half-widths and half-heights
     combinedHalfWidths = Math.abs(r1.halfWidth) + Math.abs(r2.halfWidth);
     combinedHalfHeights = Math.abs(r1.halfHeight) + Math.abs(r2.halfHeight);
-    
+
     //Check for a collision on the x axis
     if (Math.abs(vx) < combinedHalfWidths) {
       //A collision might be occuring. Check for a collision on the y axis
@@ -490,7 +490,7 @@ class CollisionModule {
       //There's no collision on the x axis
       hit = false;
     }
-    
+
     //`hit` will be either `true` or `false`
     return hit;
   }
@@ -499,9 +499,9 @@ class CollisionModule {
     //Add collision properties
     if (!r1._bumpPropertiesAdded) this.addCollisionProperties(r1);
     if (!c1._bumpPropertiesAdded) this.addCollisionProperties(c1);
-    
+
     let region, collision, c1x, c1y, r1x, r1y;
-    
+
     //Use either global or local coordinates
     if (global) {
       c1x = c1.gx;
@@ -514,7 +514,7 @@ class CollisionModule {
       r1x = r1.x;
       r1y = r1.y;
     }
-    
+
     //Is the circle above the rectangle's top edge?
     if (c1y - c1.yAnchorOffset < r1y - Math.abs(r1.halfHeight) - r1.yAnchorOffset) {
       //If it is, we need to check whether it's in the
@@ -547,7 +547,7 @@ class CollisionModule {
         region = "rightMiddle";
       }
     }
-    
+
     //Is this the circle touching the flat sides
     //of the rectangle?
     if (region === "topMiddle" || region === "bottomMiddle" || region === "leftMiddle" || region === "rightMiddle") {
@@ -557,7 +557,7 @@ class CollisionModule {
       //The circle is touching one of the corners, so do a
       //circle vs. point collision test
       let point = {};
-  
+
       switch (region) {
         case "topLeft":
           point.x = r1x - r1.xAnchorOffset;
@@ -575,11 +575,11 @@ class CollisionModule {
           point.x = r1x + r1.width - r1.xAnchorOffset;
           point.y = r1y + r1.height - r1.yAnchorOffset;
       }
-  
+
       //Check for a collision between the circle and the point
       collision = this.hitTestCirclePoint(c1, point, global);
     }
-    
+
     //Return the result of the collision.
     //The return value will be `undefined` if there's no collision
     if (collision) {
@@ -592,7 +592,7 @@ class CollisionModule {
   hitTestCirclePoint(c1, point, global) {
     //Add collision properties
     if (!c1._bumpPropertiesAdded) this.addCollisionProperties(c1);
-    
+
     //A point is just a circle with a diameter of
     //1 pixel, so we can cheat. All we need to do is an ordinary circle vs. circle
     //Collision test. Just supply the point with the properties
@@ -709,7 +709,7 @@ class CollisionModule {
   circlePointCollision(c1, point, bounce, global) {
     //Add collision properties
     if (!c1._bumpPropertiesAdded) this.addCollisionProperties(c1);
-    
+
     //A point is just a circle with a diameter of
     //1 pixel, so we can cheat. All we need to do is an ordinary circle vs. circle
     //Collision test. Just supply the point with the properties
@@ -731,50 +731,50 @@ class CollisionModule {
   bounceOffSurface(o, s) {
     //Add collision properties
     if (!o._bumpPropertiesAdded) this.addCollisionProperties(o);
-    
+
     let dp1,
       dp2,
       p1 = {},
       p2 = {},
       bounce = {},
       mass = o.mass || 1;
-    
+
     //1. Calculate the collision surface's properties
     //Find the surface vector's left normal
     s.lx = s.y;
     s.ly = -s.x;
-    
+
     //Find its magnitude
     s.magnitude = Math.sqrt(s.x * s.x + s.y * s.y);
-    
+
     //Find its normalized values
     s.dx = s.x / s.magnitude;
     s.dy = s.y / s.magnitude;
-    
+
     //2. Bounce the object (o) off the surface (s)
-    
+
     //Find the dot product between the object and the surface
     dp1 = o.vx * s.dx + o.vy * s.dy;
-    
+
     //Project the object's velocity onto the collision surface
     p1.vx = dp1 * s.dx;
     p1.vy = dp1 * s.dy;
-    
+
     //Find the dot product of the object and the surface's left normal (s.lx and s.ly)
     dp2 = o.vx * (s.lx / s.magnitude) + o.vy * (s.ly / s.magnitude);
-    
+
     //Project the object's velocity onto the surface's left normal
     p2.vx = dp2 * (s.lx / s.magnitude);
     p2.vy = dp2 * (s.ly / s.magnitude);
-    
+
     //Reverse the projection on the surface's left normal
     p2.vx *= -1;
     p2.vy *= -1;
-    
+
     //Add up the projections to create a new bounce vector
     bounce.x = p1.vx + p2.vx;
     bounce.y = p1.vy + p2.vy;
-    
+
     //Assign the bounce vector to the object's velocity
     //with optional mass to dampen the effect
     o.vx = bounce.x / mass;
@@ -785,34 +785,34 @@ class CollisionModule {
     if (!extra) extra = undefined;
     //Add collision properties
     if (!sprite._bumpPropertiesAdded) this.addCollisionProperties(sprite);
-    
+
     //Give the container x and y anchor offset values, if it doesn't
     //have any
     if (container.xAnchorOffset === undefined) container.xAnchorOffset = 0;
     if (container.yAnchorOffset === undefined) container.yAnchorOffset = 0;
     if (sprite.parent.gx === undefined) sprite.parent.gx = 0;
     if (sprite.parent.gy === undefined) sprite.parent.gy = 0;
-    
+
     //Create a Set called `collision` to keep track of the
     //boundaries with which the sprite is colliding
     let collision = new Set();
-    
+
     //Left
     if (sprite.x - sprite.xAnchorOffset <= container.x - sprite.parent.gx - container.xAnchorOffset) {
       //Bounce the sprite if `bounce` is true
       if (bounce) sprite.vx *= -1;
-  
+
       //If the sprite has `mass`, var the mass
       //affect the sprite's velocity
       if (sprite.mass) sprite.vx /= sprite.mass;
-  
+
       //Reposition the sprite inside the container
       sprite.x = container.x - sprite.parent.gx - container.xAnchorOffset + sprite.xAnchorOffset;
-  
+
       //Make a record of the side which the container hit
       collision.add("left");
     }
-    
+
     //Top
     if (sprite.y - sprite.yAnchorOffset <= container.y - sprite.parent.gy - container.yAnchorOffset) {
       if (bounce) sprite.vy *= -1;
@@ -820,7 +820,7 @@ class CollisionModule {
       sprite.y = container.y - sprite.parent.gy - container.yAnchorOffset + sprite.yAnchorOffset;
       collision.add("top");
     }
-    
+
     //Right
     if (sprite.x - sprite.xAnchorOffset + sprite.width >= container.width - container.xAnchorOffset) {
       if (bounce) sprite.vx *= -1;
@@ -828,7 +828,7 @@ class CollisionModule {
       sprite.x = container.width - sprite.width - container.xAnchorOffset + sprite.xAnchorOffset;
       collision.add("right");
     }
-    
+
     //Bottom
     if (sprite.y - sprite.yAnchorOffset + sprite.height >= container.height - container.yAnchorOffset) {
       if (bounce) sprite.vy *= -1;
@@ -836,14 +836,14 @@ class CollisionModule {
       sprite.y = container.height - sprite.height - container.yAnchorOffset + sprite.yAnchorOffset;
       collision.add("bottom");
     }
-    
+
     //If there were no collisions, set `collision` to `undefined`
     if (collision.size === 0) collision = undefined;
-    
+
     //The `extra` function runs if there was a collision
     //and `extra` has been defined
     if (collision && extra) extra(collision);
-    
+
     //Return the `collision` value
     return collision;
   }
@@ -853,11 +853,11 @@ class CollisionModule {
       y = bounds.y,
       width = bounds.width,
       height = bounds.height;
-    
+
     //The `collision` object is used to store which
     //side of the containing rectangle the sprite hits
     let collision = new Set();
-    
+
     //Left
     if (s.x < x - s.width) {
       collision.add("left");
@@ -874,14 +874,14 @@ class CollisionModule {
     if (s.y > height + s.height) {
       collision.add("bottom");
     }
-    
+
     //If there were no collisions, set `collision` to `undefined`
     if (collision.size === 0) collision = undefined;
-    
+
     //The `extra` function runs if there was a collision
     //and `extra` has been defined
     if (collision && extra) extra(collision);
-    
+
     //Return the `collision` object
     return collision;
   }
@@ -908,11 +908,11 @@ class CollisionModule {
       hitTestCircleRectangle = this.hitTestCircleRectangle.bind(this),
       rectangleCollision = this.rectangleCollision.bind(this),
       circleRectangleCollision = this.circleRectangleCollision.bind(this);
-    
+
     let collision,
       aIsASprite = a.parent !== undefined,
       bIsASprite = b.parent !== undefined;
-    
+
     //Check to make sure one of the arguments isn't an array
     if ((aIsASprite && b instanceof Array) || (bIsASprite && a instanceof Array)) {
       //If it is, check for a collision between a sprite and an array
@@ -922,21 +922,21 @@ class CollisionModule {
       //collision check to run
       collision = findCollisionType(a, b);
     }
-    
+
     //Return the result of the collision.
     //It will be `undefined` if there's no collision and `true` if
     //there is a collision. `rectangleCollision` sets `collsision` to
     //"top", "bottom", "left" or "right" depeneding on which side the
     //collision is occuring on
     return collision;
-    
+
     function findCollisionType(a, b) {
       //Are `a` and `b` both sprites?
       //(We have to check again if this function was called from
       //`spriteVsArray`)
       let aIsASprite = a.parent !== undefined;
       let bIsASprite = b.parent !== undefined;
-  
+
       if (aIsASprite && bIsASprite) {
         //Yes, but what kind of sprites?
         if (a.diameter && b.diameter) {
@@ -959,7 +959,7 @@ class CollisionModule {
         throw new Error("I'm sorry, " + a + " and " + b + " cannot be use together in a collision test.'");
       }
     }
-    
+
     function spriteVsArray() {
       //If `a` happens to be the array, flip it around so that it becomes `b`
       if (a instanceof Array) {
@@ -974,7 +974,7 @@ class CollisionModule {
         if (collision && extra) extra(collision, sprite);
       }
     }
-    
+
     function circleVsCircle(a, b) {
       //If the circles shouldn't react to the collision,
       //just test to see if they're touching
@@ -994,7 +994,7 @@ class CollisionModule {
         }
       }
     }
-    
+
     function rectangleVsRectangle(a, b) {
       //If the rectangles shouldn't react to the collision, just
       //test to see if they're touching
@@ -1004,7 +1004,7 @@ class CollisionModule {
         return rectangleCollision(a, b, bounce, global);
       }
     }
-    
+
     function circleVsRectangle(a, b) {
       //If the rectangles shouldn't react to the collision, just
       //test to see if they're touching
@@ -1023,10 +1023,10 @@ class CollisionModule {
       bottom: false,
       right: false,
     };
-    
+
     for (let i = displayObjects.length - 1; i >= 0; i--) {
       let displayObject2 = displayObjects[i];
-  
+
       if (displayObject.x < displayObject2.x + displayObject2.width) {
         hitDirections.left = true;
       }
@@ -1040,10 +1040,10 @@ class CollisionModule {
         hitDirections.bottom = true;
       }
     }
-    
+
     return hitDirections;
   }
-    
+
   hitTestDirections(displayObject, displayObjects, directions) {
     let hitDirections = this.hitTest(displayObject, displayObjects);
     for (let i in hitDirections) {
@@ -1066,7 +1066,7 @@ class CollisionModule {
       }
     }
   }
-  
+
   hitTestRight(displayObject, displayObjects) {
     for (let i = displayObjects.length - 1; i >= 0; i--) {
       let displayObject2 = displayObjects[i];
@@ -1079,7 +1079,7 @@ class CollisionModule {
       }
     }
   }
-  
+
   hitTestTop(displayObject, displayObjects) {
     for (let i = displayObjects.length - 1; i >= 0; i--) {
       let displayObject2 = displayObjects[i];
@@ -1092,7 +1092,7 @@ class CollisionModule {
       }
     }
   }
-  
+
   hitTestBottom(displayObject, displayObjects) {
     for (let i = displayObjects.length - 1; i >= 0; i--) {
       let displayObject2 = displayObjects[i];
@@ -1110,4 +1110,3 @@ class CollisionModule {
 
 // export singleton
 export default new CollisionModule();
-  

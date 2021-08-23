@@ -28,11 +28,11 @@ app.loader
 
     const defaultChar = new AnimatedCharacter({
       textures: Object.values(resources.spritesheet.textures),
-      frameMap: { 
-        right: { current: 8, min: 8, max: 11 }, 
-        left: { current: 4, min: 4, max: 7 }, 
-        down: { current:  0, min:  0, max: 3 }, 
-        up: { current: 12, min: 12, max: 15 } 
+      frameMap: {
+        right: { current: 8, min: 8, max: 11 },
+        left: { current: 4, min: 4, max: 7 },
+        down: { current: 0, min: 0, max: 3 },
+        up: { current: 12, min: 12, max: 15 }
       }
     });
     defaultChar.x = 32;
