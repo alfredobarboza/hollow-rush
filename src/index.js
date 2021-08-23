@@ -2,7 +2,7 @@ import { Application, settings, SCALE_MODES } from 'pixi.js';
 import AnimatedCharacter from './AnimatedCharacter';
 import TileMap from './TileMap';
 import { maps } from './config';
-import registerKeyboardMovement from './keyboardMovement';
+import KeyboardModule from './modules/KeyboardModule';
 import SoundModule from './modules/SoundModule';
 import DataModule from './modules/DataModule';
 
@@ -16,6 +16,8 @@ const data = new DataModule();
 // Here we will add more options as we start needing
 const sound_options = { audioList: data.audioUrls};
 const sound = new SoundModule(sound_options);
+
+const keyboard = new KeyboardModule();
 
 // Create the application helper and add its render target to the page
 const app = new Application({ width: 1024, height: 768, antialias: true });
@@ -45,7 +47,7 @@ app.loader
     defaultChar.x = 32;
     defaultChar.y = 32;
 
-    registerKeyboardMovement(app, defaultChar);
+    keyboard.register(app, defaultChar);
 
     firstMap.addChild(defaultChar);
     firstMap.load();

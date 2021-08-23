@@ -15,7 +15,7 @@ export default class TileMap extends Container {
   setup() {
     const map = this.options.config;
 
-    for (let i = 0; i < 14 * 25; i++) {
+    for (let i = 0; i < (map.pxHorizontal / map.tileSize) * (map.pxVertical / map.tileSize); i++) {
       let x = i % 14;
       let y = Math.floor(i / 14);
       this.tileTextures[i] = new Texture(

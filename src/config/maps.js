@@ -54,7 +54,9 @@ const FIRST_ARENA = {
      1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,  1
   ],
   tileSize: 32,
-  backgroundTile: 3
+  backgroundTile: 3,
+  pxHorizontal: 448,
+  pxVertical: 800
 };
 
 export default {
