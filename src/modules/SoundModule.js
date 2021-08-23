@@ -13,7 +13,6 @@ class SoundModule {
 
   play(audioName) {
     const audio = this.sounds.find(sound => sound.name === audioName);
-    console.log(audio);
     if (audio) {
       audio.play();
     }
