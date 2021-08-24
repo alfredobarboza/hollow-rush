@@ -1,7 +1,7 @@
 import CollisionModule from './CollisionModule';
 import SoundModule from './SoundModule';
 
-const getKeyValues = wasd => ({
+const getMovementKeys = wasd => ({
   RIGHT: wasd ? 'd' : 'ArrowRight',
   LEFT: wasd ? 'a' : 'ArrowLeft',
   DOWN: wasd ? 's' : 'ArrowDown',
@@ -9,14 +9,15 @@ const getKeyValues = wasd => ({
 });
 
 export default class KeyboardModule {
-  register(app, character, wasd = false) {
+  registerMovement(app, character, wasd = false) {
+    const KEYS = getMovementKeys(wasd);
+
     document.addEventListener('keydown', e => {
       const currentMap = app.stage.children.find(child => child.visible);
       const mapCfg = currentMap.options.config;
       const currentTile = Math.floor(character.getBounds().y / mapCfg.tileSize) * mapCfg.width + Math.floor(character.getBounds().x / mapCfg.tileSize);
       const mapBoundsCollision = CollisionModule.contain(character, currentMap, true);
-
-      const KEYS = getKeyValues(wasd);
+      
       // Add walking sound
       //SoundModule.play('test2');
       switch (e.key) {
@@ -51,10 +52,23 @@ export default class KeyboardModule {
     });
 
     document.addEventListener('keyup', e => {
-      // console.log('decelerate');
-      if (['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'].includes(e.key)) {
+      if (Object.values(KEYS).includes(e.key)) {
         character.setSpeed(Math.floor(character.getSpeed() * 0.2));
       }
     });
+  }
+
+  registerAction(key, onKeyDown = null, onKeyUp = null) {
+    const actionFn = (e, action) => {
+      if (e.key === key) action();
+    }
+
+    if (onKeyDown instanceof Function) {
+      document.addEventListener('keydown', e => actionFn(e, onKeyDown));
+    }
+
+    if (onKeyDown instanceof Function) {
+      document.addEventListener('keyup', e => actionFn(e, onKeyUp));
+    }
   }
 }
