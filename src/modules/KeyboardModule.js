@@ -9,7 +9,7 @@ const getMovementKeys = wasd => ({
 });
 
 export default class KeyboardModule {
-  registerMovement(app, character, wasd = true) {
+  registerMovement(app, character, wasd = false) {
     const KEYS = getMovementKeys(wasd);
 
     document.addEventListener('keydown', e => {
