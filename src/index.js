@@ -1,10 +1,11 @@
 import { Application, settings, SCALE_MODES } from 'pixi.js';
-import AnimatedCharacter from './AnimatedCharacter';
-import TileMap from './TileMap';
+import AnimatedCharacter from './entities/AnimatedCharacter';
+import TileMap from './entities/TileMap';
 import { maps } from './config';
 import KeyboardModule from './modules/KeyboardModule';
 import SoundModule from './modules/SoundModule';
 import Utils from './modules/Utils';
+import Weapon from './entities/Weapon';
 
 settings.SCALE_MODE = SCALE_MODES.NEAREST;
 
@@ -22,10 +23,8 @@ app.loader
   .add('tileset', 'assets/maps/map_tileset_32x32.png')
   .add('spritesheet', 'assets/chars/knight.json')
   .load((loader, resources) => {
-
     const firstMap = new TileMap({ config: maps.FIRST_ARENA, tileset: resources.tileset.texture });
-    //console.log('firstMap:', firstMap);
-
+    
     const defaultChar = new AnimatedCharacter({
       textures: Object.values(resources.spritesheet.textures),
       frameMap: {
@@ -37,14 +36,29 @@ app.loader
     });
     defaultChar.position.set(32, 32);
 
+    const axe = new Weapon({
+      name: 'axe',
+      state: '',
+      spriteUrl: '/assets/img/axe.png',
+      interactive: true,
+      initialPos: {
+        x: 64,
+        y: 32
+      }
+    });
+
+    //console.log(app);
+
     keyboard.registerMovement(app, defaultChar);
 
     firstMap.addChild(defaultChar);
+    
     firstMap.load();
 
     //SoundModule.play('intro');
 
     app.stage.addChild(firstMap);
+    app.stage.addChild(axe);
 
     Utils.renderVersionIndicator(app.stage);
   });

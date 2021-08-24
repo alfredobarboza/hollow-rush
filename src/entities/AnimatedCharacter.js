@@ -37,16 +37,13 @@ export default class AnimatedCharacter extends AnimatedSprite {
   }
 
   move(direction) {
-    //console.log('speed:', this.speed);
     const isHorizontal = ['left', 'right'].includes(direction);
     const isPositive = ['right', 'down'].includes(direction);
 
     // move the character to the correct direction and update animation frame
     const axis = isHorizontal ? 'x' : 'y';
     const acceleration = this.getAcceleration(this.speed, this.maxSpeed * this.speedMultiplier);
-    //console.log('current pos:', this.position[axis]);
     const newPosition = this.calculateDisplacement(this.position[axis], this.speed, acceleration, isPositive);
-    //console.log('newPosition:', newPosition);
 
     this.position[axis] = newPosition;
     this.speed += acceleration;
