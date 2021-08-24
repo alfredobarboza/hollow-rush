@@ -35,10 +35,9 @@ app.loader
         up: { current: 12, min: 12, max: 15 }
       }
     });
-    defaultChar.x = 32;
-    defaultChar.y = 32;
+    defaultChar.position.set(32, 32);
 
-    keyboard.register(app, defaultChar);
+    keyboard.registerMovement(app, defaultChar);
 
     firstMap.addChild(defaultChar);
     firstMap.load();
