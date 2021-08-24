@@ -4,6 +4,7 @@ import TileMap from './TileMap';
 import { maps } from './config';
 import KeyboardModule from './modules/KeyboardModule';
 import SoundModule from './modules/SoundModule';
+import Utils from './modules/Utils';
 
 settings.SCALE_MODE = SCALE_MODES.NEAREST;
 
@@ -45,4 +46,6 @@ app.loader
     //SoundModule.play('intro');
 
     app.stage.addChild(firstMap);
+
+    Utils.renderVersionIndicator(app.stage);
   });
