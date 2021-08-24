@@ -1,6 +1,6 @@
 import { Application, settings, SCALE_MODES } from 'pixi.js';
-import AnimatedCharacter from './AnimatedCharacter';
-import TileMap from './TileMap';
+import AnimatedCharacter from './entities/AnimatedCharacter';
+import TileMap from './entities/TileMap';
 import { maps } from './config';
 import KeyboardModule from './modules/KeyboardModule';
 import SoundModule from './modules/SoundModule';
