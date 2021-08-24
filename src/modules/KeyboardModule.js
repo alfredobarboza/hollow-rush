@@ -63,11 +63,11 @@ export default class KeyboardModule {
       if (e.key === key) action();
     }
 
-    if (typeof onKeyDown === 'function') {
+    if (onKeyDown instanceof Function) {
       document.addEventListener('keydown', e => actionFn(e, onKeyDown));
     }
 
-    if (typeof onKeyUp === 'function') {
+    if (onKeyDown instanceof Function) {
       document.addEventListener('keyup', e => actionFn(e, onKeyUp));
     }
   }
