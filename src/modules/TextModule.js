@@ -12,9 +12,11 @@ export default class TextModule extends Text {
   show(container = this.lastContainer, x = this.position.x, y = this.position.y) {
     this.visible = true;
     this.position.set(x, y);
-    this.lastContainer = container;
 
-    container?.addChild(this);
+    if (!this.lastContainer) {
+      container?.addChild(this);
+      this.lastContainer = container;
+    }
   }
 
   changeStyle(newStyle) {
