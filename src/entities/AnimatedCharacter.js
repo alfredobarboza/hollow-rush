@@ -1,7 +1,6 @@
 import { AnimatedSprite, Ticker } from "pixi.js";
 
 const BASE_ACCELERATION = 1;
-
 /**
  * TODO:
  * check which properties to keep in char and/or which to get from options obj
@@ -18,6 +17,8 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.speed = 0; // starting speed
     this.maxSpeed = 1; // max speed - tiles per second
     this.speedMultiplier = options.speedMultiplier || 32; // depends on tile size - default: 32
+
+    this.event = new CustomEvent('check:collision', { detail: this });
   }
 
   getSpeed() {
@@ -47,6 +48,8 @@ export default class AnimatedCharacter extends AnimatedSprite {
 
     this.position[axis] = newPosition;
     this.speed += acceleration;
+    
+    window.dispatchEvent(this.event);
   }
 
   calculateDisplacement(currentPosition, velocity, acceleration, positive) {

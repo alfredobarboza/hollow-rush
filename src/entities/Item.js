@@ -2,7 +2,6 @@ import { Sprite } from "@pixi/sprite";
 import { Texture } from "@pixi/core";
 import CollisionModule from '../modules/CollisionModule';
 
-
 export default class Item extends Sprite {
     constructor(options) {
         super(Texture.from(options.spriteUrl));
@@ -10,8 +9,18 @@ export default class Item extends Sprite {
         this.name = options.name;
         this.state = options.state;
         this.interactive = options.interactive;
-
         this.position.set(options.initialPos.x, options.initialPos.y);
+
+        window.addEventListener('check:collision', ({ detail: character }) => {
+            const hasCollided = this.detectCollisionWith(character);
+
+            if(hasCollided){
+                //this.visible = false;
+            } else {
+                //this.visible = true;
+            }
+        
+        });
     }
 
     setState(state) {
@@ -23,7 +32,7 @@ export default class Item extends Sprite {
     }
 
     detectCollisionWith(char) {
-        let hasCollisioned = CollisionModule.hitTestRectangle(this, char, true);
+        return CollisionModule.hitTestRectangle(this, char, true);
     }
 
 }
