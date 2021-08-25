@@ -50,8 +50,7 @@ export default class TileMap extends Container {
 
   addBackground() {
     const map = this.options.config;
-    const background = new TilingSprite(this.tileTextures[map.backgroundTile], map.width * map.tileSize, map.height * map.tileSize);
-    this.background = background;
+    this.background = new TilingSprite(this.tileTextures[map.backgroundTile], map.width * map.tileSize, map.height * map.tileSize);
 
     this.addChild(this.background);
   }
