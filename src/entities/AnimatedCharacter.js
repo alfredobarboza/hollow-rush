@@ -1,12 +1,15 @@
 import { AnimatedSprite, Ticker } from "pixi.js";
+import KeyboardModule from "../modules/KeyboardModule";
 
 const BASE_ACCELERATION = 1;
+const keyboard = new KeyboardModule();
 /**
  * TODO:
  * check which properties to keep in char and/or which to get from options obj
  * extract generic like accel calc to cfg file outside of this
  */
 export default class AnimatedCharacter extends AnimatedSprite {
+
   constructor(options) {
     super(options.textures);
 
@@ -17,8 +20,10 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.speed = 0; // starting speed
     this.maxSpeed = 1; // max speed - tiles per second
     this.speedMultiplier = options.speedMultiplier || 32; // depends on tile size - default: 32
-
+    this.items = [];
     this.event = new CustomEvent('check:collision', { detail: this });
+
+    this.executeAction();
   }
 
   getSpeed() {
@@ -48,7 +53,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
 
     this.position[axis] = newPosition;
     this.speed += acceleration;
-    
+
     window.dispatchEvent(this.event);
   }
 
@@ -71,5 +76,17 @@ export default class AnimatedCharacter extends AnimatedSprite {
 
     // acceleration formula: Δv / Δt; return always positive, with no decimals
     return Math.abs(Math.ceil((maxSpeed - speed) / (BASE_ACCELERATION * this.ticker.deltaTime)));
+  }
+
+  addItem(item) {
+
+    console.log('item added: ' + item.name);
+    this.items.push(item);
+  }
+
+  executeAction() {
+    keyboard.registerAction('Space', () => {
+      // add logic to action
+    });
   }
 }

@@ -1,18 +1,18 @@
 import Item from './Item';
 
-export default class Weapon extends Item {
+export default class ConsumableItem extends Item {
     constructor(options) {
         super(options);
         this.soundSprite = options.soundSpriteUrl || null;
-        this.attackVal = options.attackVal;
-        this.weight = options.weight;
+        this.healVal = options.healVal;
     }
 
     getChildProperties() {
+        const itemProperties = Item.prototype.getChildProperties();
         return {
             name: this.name,
-            attackVal: 1,
-            weight: 1,
+            soundSprite: 1,
+            healVal: 1,
             type: this.type
         }
     }

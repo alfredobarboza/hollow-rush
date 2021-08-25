@@ -7,7 +7,8 @@ class DataModule {
         this.audioCfg = [
             { name: 'test1', src: '/assets/audios/examplea.wav', loop: false, volume: 0.1 },
             { name: 'test2', src: '/assets/audios/exampleb.wav', loop: false, volume: 0.1 },
-            { name: 'intro', src: '/assets/audios/examplec.wav', loop: false, volume: 0.1 }
+            { name: 'intro', src: '/assets/audios/examplec.wav', loop: false, volume: 0.1 },
+            { name: 'grabItem', src: '/assets/audios/grabItem.wav', loop: false, volume: 0.1 },
         ];
     }
 }

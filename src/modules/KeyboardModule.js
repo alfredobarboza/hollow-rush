@@ -17,7 +17,7 @@ export default class KeyboardModule {
       const mapCfg = currentMap.options.config;
       const currentTile = Math.floor(character.getBounds().y / mapCfg.tileSize) * mapCfg.width + Math.floor(character.getBounds().x / mapCfg.tileSize);
       const mapBoundsCollision = CollisionModule.contain(character, currentMap, true);
-      
+
       // Add walking sound
       //SoundModule.play('test2');
       switch (e.key) {
@@ -59,16 +59,16 @@ export default class KeyboardModule {
   }
 
   registerAction(key, onKeyDown = null, onKeyUp = null) {
-    const actionFn = (e, action) => {
-      if (e.key === key) action();
+    if (onKeyDown instanceof Function) {
+      document.addEventListener('keydown', (e) => {
+        if (e.code === key) onKeyDown();
+      });
     }
 
     if (onKeyDown instanceof Function) {
-      document.addEventListener('keydown', e => actionFn(e, onKeyDown));
-    }
-
-    if (onKeyDown instanceof Function) {
-      document.addEventListener('keyup', e => actionFn(e, onKeyUp));
+      document.addEventListener('keyup', (e) => {
+        if (e.code === key) onKeyUp();
+      });
     }
   }
 }

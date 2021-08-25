@@ -1,26 +1,20 @@
 import { Sprite } from "@pixi/sprite";
 import { Texture } from "@pixi/core";
 import CollisionModule from '../modules/CollisionModule';
+import SoundModule from "../modules/SoundModule";
+
+
 
 export default class Item extends Sprite {
     constructor(options) {
         super(Texture.from(options.spriteUrl));
 
         this.name = options.name;
-        this.state = options.state;
+        this.type = options.type;
         this.interactive = options.interactive;
         this.position.set(options.initialPos.x, options.initialPos.y);
 
-        window.addEventListener('check:collision', ({ detail: character }) => {
-            const hasCollided = this.detectCollisionWith(character);
-
-            if(hasCollided){
-                //this.visible = false;
-            } else {
-                //this.visible = true;
-            }
-        
-        });
+        window.addEventListener('check:collision', this.checkCollision);
     }
 
     setState(state) {
@@ -31,8 +25,30 @@ export default class Item extends Sprite {
         this.position.set(posX, posY);
     }
 
+
     detectCollisionWith(char) {
         return CollisionModule.hitTestRectangle(this, char, true);
     }
 
+    cleanup() {
+        window.removeEventListener('check:collision', this.checkCollision)
+        this.destroy();
+    }
+
+    // TODO check if we can move this somewhere else.
+    checkCollision = ({ detail: character }) => {
+        const hasCollided = this.detectCollisionWith(character);
+
+        if (hasCollided) {
+            SoundModule.play('grabItem');
+
+            //Add logic to all items
+            character.addItem(this.getChildProperties());
+            this.cleanup();
+        }
+    }
+
+    getChildProperties() {
+        return { name: this.name };
+    }
 }
