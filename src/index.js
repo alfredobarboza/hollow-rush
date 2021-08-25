@@ -28,9 +28,9 @@ const healPotion = new ConsumableItem({
   type: ITEM_TYPES.TYPES.CONSUMABLE
 });
 
-const specialTeleporter = new Item({
+const portal = new Item({
   name: ITEM_TYPES.SPECIALS.TELEPORTER,
-  spriteUrl: '/assets/items/teleporter.png',
+  spriteUrl: '/assets/items/portal.png',
   type: ITEM_TYPES.TYPES.SPECIAL,
   grabbable: false
 });
@@ -60,11 +60,11 @@ app.loader
     firstMap.add(defaultChar, 32, 32);
     firstMap.add(axe, 64, 32);
     firstMap.add(healPotion, 128, 32);
-    firstMap.add(specialTeleporter, firstMap.width - 64, firstMap.height - 64);
+    firstMap.add(portal, firstMap.width - 64, firstMap.height - 64);
 
     app.stage.addChild(mapSequencer.getCurrent());
 
-    specialTeleporter.onCollision = () => {
+    portal.onCollision = () => {
       const nextMap = mapSequencer.loadNext();
       
       nextMap.add(defaultChar, 256, 256);
