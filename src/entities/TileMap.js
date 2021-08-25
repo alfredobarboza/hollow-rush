@@ -43,7 +43,8 @@ export default class TileMap extends Container {
   unload() {
     this.children.forEach(child => {
       this.removeChild(child);
-    })
+    });
+    this.destroy();
   }
 
   addBackground() {
