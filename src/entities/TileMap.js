@@ -36,15 +36,16 @@ export default class TileMap extends Container {
   }
 
   load() {
+    this.visible = true;
     this.addBackground();
     this.addChild(this.mapContainer);
   }
 
   unload() {
+    this.visible = false;
     this.children.forEach(child => {
       this.removeChild(child);
     });
-    this.destroy();
   }
 
   addBackground() {

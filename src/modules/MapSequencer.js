@@ -40,5 +40,7 @@ export default class MapSequencer {
     nextMap.load();
 
     this.currentMapIndex = mapIndex;
+
+    return nextMap;
   }
 }
