@@ -1,17 +1,13 @@
 import { Application, settings, SCALE_MODES } from 'pixi.js';
-import AnimatedCharacter from './entities/AnimatedCharacter';
-import TileMap from './entities/TileMap';
 import { maps, enums } from './config';
-import KeyboardModule from './modules/KeyboardModule';
-import SoundModule from './modules/SoundModule';
-import Utils from './modules/Utils';
-import Weapon from './entities/Weapon';
-import ConsumableItem from './entities/ConsumableItem';
+import { KeyboardModule, SoundModule, Utils, MapSequencer } from './modules';
+import { AnimatedCharacter, TileMap, Weapon, Item, ConsumableItem } from './entities';
 
 settings.SCALE_MODE = SCALE_MODES.NEAREST;
 
 const keyboard = new KeyboardModule();
 const ITEM_TYPES = enums.itemTypes;
+
 // Create the application helper and add its render target to the page
 const app = new Application({ width: 1024, height: 768, antialias: true });
 document.body.appendChild(app.view);
@@ -20,11 +16,32 @@ app.renderer.view.style.position = 'absolute';
 app.renderer.view.style.margin = 0;
 app.renderer.view.style.padding = 0;
 
+const axe = new Weapon({
+  name: ITEM_TYPES.WEAPONS.AXE,
+  type: ITEM_TYPES.TYPES.WEAPON,
+  spriteUrl: '/assets/items/axe.png'
+});
+
+const healPotion = new ConsumableItem({
+  name: ITEM_TYPES.CONSUMABLES.POTION,
+  spriteUrl: '/assets/items/potion.png',
+  type: ITEM_TYPES.TYPES.CONSUMABLE
+});
+
+const specialTeleporter = new Item({
+  name: ITEM_TYPES.SPECIALS.TELEPORTER,
+  spriteUrl: '/assets/items/teleporter.png',
+  type: ITEM_TYPES.TYPES.SPECIAL,
+  grabbable: false
+});
+
 app.loader
-  .add('tileset', 'assets/maps/map_tileset_32x32.png')
   .add('spritesheet', 'assets/chars/knight.json')
   .load((loader, resources) => {
-    const firstMap = new TileMap({ config: maps.FIRST_ARENA, tileset: resources.tileset.texture });
+    const firstMap = new TileMap({ config: maps.FIRST_ARENA, tilesetUrl: 'assets/maps/map_tileset_32x32.png' });
+    const specialMap = new TileMap({ config: maps.SPECIAL_MAP, tilesetUrl: 'assets/maps/map_tileset_32x32.png' });
+
+    const mapSequencer = new MapSequencer([ firstMap, specialMap ]);
 
     const defaultChar = new AnimatedCharacter({
       textures: Object.values(resources.spritesheet.textures),
@@ -37,42 +54,25 @@ app.loader
       width: 32,
       height: 32
     });
-    defaultChar.position.set(32, 32);
-    
-    const axe = new Weapon({
-      name: ITEM_TYPES.WEAPONS.AXE,
-      type: ITEM_TYPES.TYPES.WEAPON,
-      spriteUrl: '/assets/img/axe.png',
-      interactive: true,
-      initialPos: {
-        x: 64,
-        y: 32
-      }
-    });
-
-    const healPotion = new ConsumableItem({
-      name: ITEM_TYPES.CONSUMABLES.POTION,
-      spriteUrl: '/assets/img/potion.png',
-      type: ITEM_TYPES.TYPES.CONSUMABLE,
-      interactive: true,
-      initialPos: {
-        x: 128,
-        y: 32
-      }
-    });
-
 
     keyboard.registerMovement(app, defaultChar);
 
-    firstMap.addChild(defaultChar);
+    firstMap.add(defaultChar, 32, 32);
+    firstMap.add(axe, 64, 32);
+    firstMap.add(healPotion, 128, 32);
+    firstMap.add(specialTeleporter, firstMap.width - 64, firstMap.height - 64);
 
-    firstMap.load();
+    app.stage.addChild(mapSequencer.getCurrent());
+
+    specialTeleporter.onCollision = () => {
+      const nextMap = mapSequencer.loadNext();
+      
+      nextMap.add(defaultChar, 256, 256);
+      app.stage.addChild(nextMap);
+      SoundModule.play('intro');
+    }
 
     //SoundModule.play('intro');
-
-    app.stage.addChild(firstMap);
-    app.stage.addChild(axe);
-    app.stage.addChild(healPotion);
 
     Utils.renderVersionIndicator(app.stage);
   });

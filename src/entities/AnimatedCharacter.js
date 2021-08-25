@@ -9,7 +9,6 @@ const keyboard = new KeyboardModule();
  * extract generic like accel calc to cfg file outside of this
  */
 export default class AnimatedCharacter extends AnimatedSprite {
-
   constructor(options) {
     super(options.textures);
 
@@ -84,6 +83,10 @@ export default class AnimatedCharacter extends AnimatedSprite {
 
     console.log('item added: ' + item.name);
     this.items.push(item);
+  }
+
+  setPosition(posX, posY) {
+    this.position.set(posX, posY);
   }
 
   executeAction() {
