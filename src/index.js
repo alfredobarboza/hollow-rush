@@ -33,10 +33,12 @@ app.loader
         left: { current: 4, min: 4, max: 7 },
         down: { current: 0, min: 0, max: 3 },
         up: { current: 12, min: 12, max: 15 }
-      }
+      },
+      width: 32,
+      height: 32
     });
     defaultChar.position.set(32, 32);
-
+    
     const axe = new Weapon({
       name: ITEM_TYPES.WEAPONS.AXE,
       type: ITEM_TYPES.TYPES.WEAPON,
@@ -58,6 +60,7 @@ app.loader
         y: 32
       }
     });
+
 
     keyboard.registerMovement(app, defaultChar);
 

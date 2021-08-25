@@ -22,6 +22,8 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.speedMultiplier = options.speedMultiplier || 32; // depends on tile size - default: 32
     this.items = [];
     this.event = new CustomEvent('check:collision', { detail: this });
+    this.width = options.width;
+    this.height = options.height;
 
     this.executeAction();
   }
