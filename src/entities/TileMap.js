@@ -1,4 +1,4 @@
-import { Container, TilingSprite, Texture, Sprite, Rectangle } from "pixi.js";
+import { Container, TilingSprite, Texture, BaseTexture, Sprite, Rectangle } from "pixi.js";
 
 export default class TileMap extends Container {
   constructor(options) {
@@ -9,7 +9,6 @@ export default class TileMap extends Container {
     this.mapContainer = new Container();
 
     this.setup();
-    this.addBackground();
   }
 
   setup() {
@@ -19,7 +18,7 @@ export default class TileMap extends Container {
       let x = i % 14;
       let y = Math.floor(i / 14);
       this.tileTextures[i] = new Texture(
-        this.options.tileset,
+        BaseTexture.from(this.options.tilesetUrl),
         new Rectangle(x * map.tileSize, y * map.tileSize, map.tileSize, map.tileSize)
       );
     }
@@ -37,13 +36,27 @@ export default class TileMap extends Container {
   }
 
   load() {
+    this.visible = true;
+    this.addBackground();
     this.addChild(this.mapContainer);
+  }
+
+  unload() {
+    this.visible = false;
+    this.children.forEach(child => {
+      this.removeChild(child);
+    });
   }
 
   addBackground() {
     const map = this.options.config;
-    const background = new TilingSprite(this.tileTextures[map.backgroundTile], map.width * map.tileSize, map.height * map.tileSize);
+    this.background = new TilingSprite(this.tileTextures[map.backgroundTile], map.width * map.tileSize, map.height * map.tileSize);
 
-    this.addChild(background);
+    this.addChild(this.background);
+  }
+
+  add(entity, x, y) {
+    entity.setPosition(x, y);
+    this.addChild(entity);
   }
 }

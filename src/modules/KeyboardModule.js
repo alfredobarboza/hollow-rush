@@ -1,5 +1,6 @@
 import CollisionModule from './CollisionModule';
 import SoundModule from './SoundModule';
+import TileMap from '../entities/TileMap';
 
 const getMovementKeys = wasd => ({
   RIGHT: wasd ? 'd' : 'ArrowRight',
@@ -13,7 +14,7 @@ export default class KeyboardModule {
     const KEYS = getMovementKeys(wasd);
 
     document.addEventListener('keydown', e => {
-      const currentMap = app.stage.children.find(child => child.visible);
+      const currentMap = app.stage.children.find(child => child instanceof TileMap && child.visible);
       const mapCfg = currentMap.options.config;
       const currentTile = Math.floor(character.getBounds().y / mapCfg.tileSize) * mapCfg.width + Math.floor(character.getBounds().x / mapCfg.tileSize);
       const mapBoundsCollision = CollisionModule.contain(character, currentMap, true);
