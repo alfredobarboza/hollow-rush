@@ -54,6 +54,10 @@ export default class Item extends Sprite {
   }
 
   getChildProperties() {
-    return { name: this.name };
+    return { 
+      name: this.name,
+      type: this.type,
+      grabbable: this.grabbable
+    };
   }
 }
