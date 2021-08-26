@@ -11,9 +11,9 @@ export default class ConsumableItem extends Item {
     this.stackSize = options.stackSize || 1;
   }
 
-  getChildProperties() {
+  getItemProperties() {
     return {
-      ...super.getChildProperties(),
+      ...super.getItemProperties(),
       soundSprite: 1,
       healVal: 1,
       quantity: this.quantity

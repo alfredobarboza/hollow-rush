@@ -8,9 +8,9 @@ export default class Weapon extends Item {
     this.weight = options.weight;
   }
 
-  getChildProperties() {
+  getItemProperties() {
     return {
-      ...super.getChildProperties(),
+      ...super.getItemProperties(),
       attackVal: this.attackVal,
       weight: this.weight
     };
