@@ -1,7 +1,10 @@
 import { AnimatedSprite, Ticker } from "pixi.js";
+import enums from "../config/enums";
 import KeyboardModule from "../modules/KeyboardModule";
+import TextModule from "../modules/TextModule";
 
 const BASE_ACCELERATION = 1;
+const CHARACTER_ACTIONS = enums.characterActions;
 const keyboard = new KeyboardModule();
 /**
  * TODO:
@@ -24,7 +27,9 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.width = options.width;
     this.height = options.height;
 
-    this.executeAction();
+    // region registering actions
+    this.registerCharacterAction(CHARACTER_ACTIONS.ATTACK);
+    this.registerCharacterAction(CHARACTER_ACTIONS.USE_ITEM);
   }
 
   getSpeed() {
@@ -79,19 +84,64 @@ export default class AnimatedCharacter extends AnimatedSprite {
     return Math.abs(Math.ceil((maxSpeed - speed) / (BASE_ACCELERATION * this.ticker.deltaTime)));
   }
 
-  addItem(item) {
+  addItem(item, qtty) {
+    // check if incoming item 
+    // is already in the inventory
+    const hasInputItem = this.items.some(currItem => currItem.name === item.name);
 
-    console.log('item added: ' + item.name);
-    this.items.push(item);
+    // adds qtty to existing item 
+    // or add item from scratch
+    if (hasInputItem) {
+      this.items = this.items.map(currItem => {
+        if (currItem.name === item.name) {
+          const qttyExceeds = item.quantity + qtty > currItem.maxStackSize;
+          currItem.quantity = qttyExceeds ? currItem.maxStackSize : currItem.quantity + qtty;
+        }
+        return currItem;
+
+      });
+    } else {
+      item.quantity = qtty;
+      this.items = [...this.items, item];
+    }
   }
 
   setPosition(posX, posY) {
     this.position.set(posX, posY);
   }
 
-  executeAction() {
-    keyboard.registerAction('Space', () => {
-      // add logic to action
-    });
-  }
+  registerCharacterAction(actionType) {
+    let key, action;
+    switch (actionType.NAME) {
+      case CHARACTER_ACTIONS.ATTACK.NAME:
+        key = CHARACTER_ACTIONS.ATTACK.KEY;
+        action = () => {
+          console.log('key:' + key);
+        }
+        break;
+      case CHARACTER_ACTIONS.USE_ITEM.NAME:
+        key = CHARACTER_ACTIONS.USE_ITEM.KEY;
+        action = () => {
+          console.log('key:' + key);
+          // check if potions are available
+          console.log('items before:', this.items);
+          const hasQtty = this.items.some(item => item.name === 'potion' && item.quantity > 1);
+          if (hasQtty) {
+            this.items = this.items.map(item => {
+              if (item.name === 'potion') {
+                item.quantity--;
+              }
+
+              return item;
+            });
+          } else {
+            this.items = this.items.filter(item => item.name !== 'potion');
+          }
+        }
+        break;
+      default:
+        break;
+    }
+    keyboard.registerAction(key, action);
+ }
 }

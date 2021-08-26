@@ -15,9 +15,21 @@ const itemTypes = {
   },
   SPECIALS: {
     TELEPORTER: 'teleporter'
-  }
+  },
 };
 
+const characterActions = {
+  ATTACK: {
+    KEY: 'Space',
+    NAME: 'attack'
+  },
+  USE_ITEM: {
+    KEY: 'KeyF',
+    NAME: 'use'
+  }
+}
+
 export default {
-  itemTypes
+  itemTypes,
+  characterActions
 };

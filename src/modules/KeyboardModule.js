@@ -66,7 +66,7 @@ export default class KeyboardModule {
       });
     }
 
-    if (onKeyDown instanceof Function) {
+    if (onKeyUp instanceof Function) {
       document.addEventListener('keyup', (e) => {
         if (e.code === key) onKeyUp();
       });
