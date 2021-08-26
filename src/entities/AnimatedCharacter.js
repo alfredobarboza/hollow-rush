@@ -1,7 +1,6 @@
 import { AnimatedSprite, Ticker } from "pixi.js";
 import enums from "../config/enums";
 import KeyboardModule from "../modules/KeyboardModule";
-import TextModule from "../modules/TextModule";
 
 const BASE_ACCELERATION = 1;
 const CHARACTER_ACTIONS = enums.characterActions;
@@ -122,9 +121,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
       case CHARACTER_ACTIONS.USE_ITEM.NAME:
         key = CHARACTER_ACTIONS.USE_ITEM.KEY;
         action = () => {
-          console.log('key:' + key);
           // check if potions are available
-          console.log('items before:', this.items);
           const hasQtty = this.items.some(item => item.name === 'potion' && item.quantity > 1);
           if (hasQtty) {
             this.items = this.items.map(item => {

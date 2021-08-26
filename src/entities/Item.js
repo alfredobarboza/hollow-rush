@@ -44,7 +44,7 @@ export default class Item extends Sprite {
       const amnt = this.stackSize || 1;
 
       //Add logic to all items
-      character.addItem(this.getChildProperties(), amnt);
+      character.addItem(this.getItemProperties(), amnt);
       this.cleanup();
     }
 
@@ -53,7 +53,11 @@ export default class Item extends Sprite {
     }
   }
 
-  getChildProperties() {
-    return { name: this.name };
+  getItemProperties() {
+    return { 
+      name: this.name,
+      type: this.type,
+      grabbable: this.grabbable
+    };
   }
 }
