@@ -36,14 +36,15 @@ export default class Item extends Sprite {
   // TODO check if we can move this somewhere else.
   checkCollision = ({ detail: character }) => {
     const hasCollided = this.detectCollisionWith(character);
-
+    
     if (!hasCollided) return;
 
     if (this.grabbable) {
       SoundModule.play('grabItem');
+      const amnt = this.stackSize || 1;
 
       //Add logic to all items
-      character.addItem(this.getChildProperties());
+      character.addItem(this.getChildProperties(), amnt);
       this.cleanup();
     }
 

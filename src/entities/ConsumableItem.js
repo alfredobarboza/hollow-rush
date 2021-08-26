@@ -5,15 +5,18 @@ export default class ConsumableItem extends Item {
         super(options);
         this.soundSprite = options.soundSpriteUrl || null;
         this.healVal = options.healVal;
+        this.quantity = 1;
+        this.maxStack = options.maxStack || 10;
+        this.stackSize = options.stackSize || 1;
     }
 
     getChildProperties() {
-        const itemProperties = Item.prototype.getChildProperties();
         return {
             name: this.name,
             soundSprite: 1,
             healVal: 1,
-            type: this.type
+            type: this.type,
+            quantity: this.quantity
         }
     }
 }
