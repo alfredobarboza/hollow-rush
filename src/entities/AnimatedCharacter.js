@@ -1,10 +1,12 @@
 import { AnimatedSprite, Ticker } from "pixi.js";
-import enums from "../config/enums";
-import KeyboardModule from "../modules/KeyboardModule";
-import DataModule from "../modules/DataModule";
+import { characterActions as CHARACTER_ACTIONS, itemTypes as ITEM_TYPES } from "../config/enums";
+import { EventBus, KeyboardModule, SoundModule } from "../modules";
+import { v4 as UUID } from 'uuid';
+import { DataModule } from "../modules";
 
 const BASE_ACCELERATION = 1;
-const CHARACTER_ACTIONS = enums.characterActions;
+//const CHARACTER_ACTIONS = enums.characterActions;
+//const ITEM_TYPES = enums.itemTypes;
 const keyboard = new KeyboardModule();
 /**
  * TODO:
@@ -15,6 +17,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
   constructor(options) {
     super(options.textures);
 
+    this.id = UUID();
     this.ticker = Ticker.shared;
     this.autoUpdate = false;
     this.interactive = true;
@@ -22,17 +25,9 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.speed = 0; // starting speed
     this.maxSpeed = 1; // max speed - tiles per second
     this.speedMultiplier = options.speedMultiplier || 32; // depends on tile size - default: 32
-    this.items = [];
-    this.event = new CustomEvent('check:collision', { detail: this });
+    this.inventory = [];
     this.width = options.width;
     this.height = options.height;
-    this.classProperties = DataModule.charSheets.find(item => item.name === options.class);
-
-    console.log(this.classProperties);
-
-    // region registering actions
-    this.registerCharacterAction(CHARACTER_ACTIONS.ATTACK);
-    this.registerCharacterAction(CHARACTER_ACTIONS.USE_ITEM);
   }
 
   getSpeed() {
@@ -63,7 +58,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.position[axis] = newPosition;
     this.speed += acceleration;
 
-    window.dispatchEvent(this.event);
+    EventBus.publish('character.move', this);
   }
 
   calculateDisplacement(currentPosition, velocity, acceleration, positive) {
@@ -87,16 +82,42 @@ export default class AnimatedCharacter extends AnimatedSprite {
     return Math.abs(Math.ceil((maxSpeed - speed) / (BASE_ACCELERATION * this.ticker.deltaTime)));
   }
 
-  addItem(item, qtty) {
-    // check if incoming item 
-    // is already in the inventory
-    const hasInputItem = this.items.some(currItem => currItem.name === item.name);
+  handleInteraction(entity) {
+    // check if entity can be added to inventory
+    if (entity.grabbable) {
+      SoundModule.play('grabItem');
+      const amount = entity.stackSize || 1;
 
-    // adds qtty to existing item 
-    // or add item from scratch
+      this.addToInventory(entity, amount);
+      this.container.remove(entity);
+
+      // depending on what did we get, bind to a keyboard action to use when pressed
+      switch (entity.type) {
+        case ITEM_TYPES.TYPES.CONSUMABLE:
+          this.registerCharacterAction(CHARACTER_ACTIONS.USE_ITEM, entity.id);
+          break;
+        case ITEM_TYPES.TYPES.WEAPON:
+          this.registerCharacterAction(CHARACTER_ACTIONS.ATTACK, entity.id);
+          break;
+        default:
+          break;
+      }
+    }
+
+    // execute custom action callback if present
+    if (entity.onCollision instanceof Function) {
+      entity.onCollision();
+    }
+  }
+
+  addToInventory(item, qtty) {
+    // check if incoming item is already in the inventory
+    const hasInputItem = this.inventory.some(currItem => currItem.id === item.id);
+
+    // adds qtty to existing item or add item from scratch
     if (hasInputItem) {
-      this.items = this.items.map(currItem => {
-        if (currItem.name === item.name) {
+      this.inventory = this.inventory.map(currItem => {
+        if (currItem.id === item.id) {
           const qttyExceeds = item.quantity + qtty > currItem.maxStackSize;
           currItem.quantity = qttyExceeds ? currItem.maxStackSize : currItem.quantity + qtty;
         }
@@ -105,30 +126,32 @@ export default class AnimatedCharacter extends AnimatedSprite {
       });
     } else {
       item.quantity = qtty;
-      this.items = [...this.items, item];
+      this.inventory = [...this.inventory, item];
     }
+
+    EventBus.publish('character.inventory.update', this.inventory);
   }
 
   setPosition(posX, posY) {
     this.position.set(posX, posY);
   }
 
-  registerCharacterAction(actionType) {
+  registerCharacterAction(actionType, itemId) {
     let key, action;
     switch (actionType.NAME) {
       case CHARACTER_ACTIONS.ATTACK.NAME:
         key = CHARACTER_ACTIONS.ATTACK.KEY;
         action = () => {
-          console.log('key:' + key);
+          console.log('ATTACK!');
         }
         break;
       case CHARACTER_ACTIONS.USE_ITEM.NAME:
         key = CHARACTER_ACTIONS.USE_ITEM.KEY;
         action = () => {
           // check if potions are available
-          const hasQtty = this.items.some(item => item.name === 'potion' && item.quantity > 1);
+          const hasQtty = this.inventory.some(item => item.id === itemId && item.quantity > 1);
           if (hasQtty) {
-            this.items = this.items.map(item => {
+            this.inventory = this.inventory.map(item => {
               if (item.name === 'potion') {
                 item.quantity--;
               }
@@ -136,13 +159,15 @@ export default class AnimatedCharacter extends AnimatedSprite {
               return item;
             });
           } else {
-            this.items = this.items.filter(item => item.name !== 'potion');
+            this.inventory = this.inventory.filter(item => item.id !== itemId);
           }
+
+          EventBus.publish('character.inventory.update', this.inventory);
         }
         break;
       default:
         break;
     }
     keyboard.registerAction(key, action);
- }
+  }
 }

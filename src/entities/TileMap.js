@@ -1,4 +1,5 @@
 import { Container, TilingSprite, Texture, BaseTexture, Sprite, Rectangle } from "pixi.js";
+import { CollisionModule, EventBus } from "../modules";
 
 export default class TileMap extends Container {
   constructor(options) {
@@ -7,6 +8,7 @@ export default class TileMap extends Container {
     this.options = options;
     this.tileTextures = [];
     this.mapContainer = new Container();
+    this.mapEntities = [];
 
     this.setup();
   }
@@ -39,6 +41,8 @@ export default class TileMap extends Container {
     this.visible = true;
     this.addBackground();
     this.addChild(this.mapContainer);
+    this.registerEntityCollisions();
+    EventBus.publish('map.load', this);
   }
 
   unload() {
@@ -56,7 +60,38 @@ export default class TileMap extends Container {
   }
 
   add(entity, x, y) {
+    EventBus.publish('map.entity.add', entity);
+
     entity.setPosition(x, y);
+    entity.container = this;
+
+    this.mapEntities = [...this.mapEntities, entity];
+
     this.addChild(entity);
+  }
+
+  remove(entity) {
+    EventBus.publish('map.entity.remove', entity);
+
+    this.mapEntities = this.mapEntities.filter(item => item.id !== entity.id);
+
+    this.removeChild(entity);
+  } 
+
+  registerEntityCollisions = () => {
+    EventBus.subscribe('#.move', entity => {
+      //console.log('%cEntity moved:', 'font-weight:bold;color:cyan;', entity);
+      const collisions = this.mapEntities
+        // except with itself
+        .filter(item => item.id !== entity.id)
+        // check if it has collided with something and return it
+        .filter(item => CollisionModule.hitTestRectangle(entity, item, true));
+      
+      if (collisions.length && entity.handleInteraction instanceof Function) {
+        // for now, collisions with more than one entity at the same time will never happen
+        //console.log('%cEntity collided with:', 'font-weight:bold;color:cyan;', collisions[0]);
+        entity.handleInteraction(collisions[0]);
+      }
+    });
   }
 }

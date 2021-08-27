@@ -47,7 +47,6 @@ export default class KeyboardModule {
           character.animate('up');
           break;
         default:
-          console.log('pelotudo ponete las manos');
           break;
       }
     });
