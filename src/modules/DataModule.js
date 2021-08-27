@@ -14,17 +14,26 @@ class DataModule {
             {
                 name: 'rogue',
                 attackValue: 20,
-                hp: 85
+                hp: 85,
+                mana: 50
             },
             {
                 name: 'gladiator',
                 attackValue: 10,
-                hp: 150
+                hp: 150,
+                mana: 20
             },
             {
                 name: 'paladin',
                 attackValue: 15,
-                hp: 120
+                hp: 120,
+                mana: 100
+            },
+            {
+                name: 'paladin',
+                attackValue: 5,
+                hp: 80,
+                mana: 150
             },
         ]
     }
