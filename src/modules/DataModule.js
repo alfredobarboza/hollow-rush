@@ -1,7 +1,6 @@
 class DataModule {
     constructor() {
         //TODO: Refactor all hardcoded const values to a propery here
-        this.charOptions;
         this.tileMap;
 
         this.audioCfg = [
@@ -10,6 +9,24 @@ class DataModule {
             { name: 'intro', src: '/assets/audios/examplec.wav', loop: false, volume: 0.1 },
             { name: 'grabItem', src: '/assets/audios/grabItem.wav', loop: false, volume: 0.1 },
         ];
+
+        this.charSheets = [
+            {
+                name: 'rogue',
+                attackValue: 20,
+                hp: 85
+            },
+            {
+                name: 'gladiator',
+                attackValue: 10,
+                hp: 150
+            },
+            {
+                name: 'paladin',
+                attackValue: 15,
+                hp: 120
+            },
+        ]
     }
 }
 
