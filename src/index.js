@@ -10,7 +10,7 @@ const ITEM_TYPES = enums.itemTypes;
 
 // Create the application helper and add its render target to the page
 const app = new Application({ width: 1024, height: 768, antialias: true });
-document.body.appendChild(app.view);
+document.querySelector('#game').appendChild(app.view);
 
 app.renderer.view.style.position = 'absolute';
 app.renderer.view.style.margin = 0;
@@ -25,7 +25,8 @@ const axe = new Weapon({
 const healPotion = new ConsumableItem({
   name: ITEM_TYPES.CONSUMABLES.POTION,
   spriteUrl: '/assets/items/potion.png',
-  type: ITEM_TYPES.TYPES.CONSUMABLE
+  type: ITEM_TYPES.TYPES.CONSUMABLE,
+  stackSize: 10
 });
 
 const portal = new Item({
@@ -76,3 +77,6 @@ app.loader
 
     Utils.renderVersionIndicator(app.stage);
   });
+
+Utils.debugEvents();
+Utils.displayOuterInventory();

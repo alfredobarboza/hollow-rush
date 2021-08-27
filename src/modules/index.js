@@ -1,7 +1,9 @@
 export { default as CollisionModule } from './CollisionModule';
 export { default as DataModule } from './DataModule';
+export { default as EventBus } from './EventBus';
 export { default as KeyboardModule } from './KeyboardModule';
 export { default as MapSequencer } from './MapSequencer';
 export { default as SoundModule } from './SoundModule';
 export { default as TextModule } from './TextModule';
+//export { default as UIModule } from './UIModule';
 export { default as Utils } from './Utils';

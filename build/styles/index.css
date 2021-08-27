@@ -1,0 +1,13 @@
+#game-data {
+  font-family: 'Courier New', Courier, monospace;
+  position:absolute;
+  top: 800px;
+}
+
+.inventory {
+  display: flex;
+}
+
+.inventory .inventory-item {
+  text-align: center;
+}
