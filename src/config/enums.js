@@ -1,4 +1,4 @@
-const itemTypes = {
+export const itemTypes = {
   TYPES: {
     WEAPON: 'weapon',
     CONSUMABLE: 'consumable',
@@ -18,7 +18,7 @@ const itemTypes = {
   },
 };
 
-const characterActions = {
+export const characterActions = {
   ATTACK: {
     KEY: 'Space',
     NAME: 'attack'
