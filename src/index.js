@@ -53,7 +53,8 @@ app.loader
         up: { current: 12, min: 12, max: 15 }
       },
       width: 32,
-      height: 32
+      height: 32,
+      class: 'rogue'
     });
 
     keyboard.registerMovement(app, defaultChar);
