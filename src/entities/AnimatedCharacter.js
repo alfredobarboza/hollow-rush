@@ -5,8 +5,6 @@ import { v4 as UUID } from 'uuid';
 import { DataModule } from "../modules";
 
 const BASE_ACCELERATION = 1;
-//const CHARACTER_ACTIONS = enums.characterActions;
-//const ITEM_TYPES = enums.itemTypes;
 const keyboard = new KeyboardModule();
 /**
  * TODO:
@@ -28,6 +26,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.inventory = [];
     this.width = options.width;
     this.height = options.height;
+    this.stats = DataModule.charSheets.find(charClass => charClass.name === options.class);
   }
 
   getSpeed() {

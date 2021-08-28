@@ -30,10 +30,16 @@ class DataModule {
                 mana: 100
             },
             {
-                name: 'paladin',
+                name: 'mage',
                 attackValue: 5,
                 hp: 80,
                 mana: 150
+            },
+            {
+                name: 'undead',
+                attackValue: 8,
+                hp: 200,
+                mana: 0
             },
         ]
     }
