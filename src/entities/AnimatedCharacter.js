@@ -1,8 +1,7 @@
 import { AnimatedSprite, Ticker } from "pixi.js";
 import { characterActions as CHARACTER_ACTIONS, itemTypes as ITEM_TYPES } from "../config/enums";
-import { EventBus, KeyboardModule, SoundModule } from "../modules";
+import { EventBus, KeyboardModule, SoundModule, DataModule } from "../modules";
 import { v4 as UUID } from 'uuid';
-import { DataModule } from "../modules";
 
 const BASE_ACCELERATION = 1;
 const keyboard = new KeyboardModule();
