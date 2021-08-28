@@ -86,18 +86,6 @@ export default class AnimatedCharacter extends AnimatedSprite {
 
       this.addToInventory(entity, amount);
       this.container.remove(entity);
-
-      // depending on what did we get, bind to a keyboard action to use when pressed
-      switch (entity.type) {
-        case ITEM_TYPES.TYPES.CONSUMABLE:
-          this.registerCharacterAction(CHARACTER_ACTIONS.USE_ITEM, entity.id);
-          break;
-        case ITEM_TYPES.TYPES.WEAPON:
-          this.registerCharacterAction(CHARACTER_ACTIONS.ATTACK, entity.id);
-          break;
-        default:
-          break;
-      }
     }
 
     // execute custom action callback if present
@@ -123,6 +111,18 @@ export default class AnimatedCharacter extends AnimatedSprite {
     } else {
       item.quantity = qtty;
       this.inventory = [...this.inventory, item];
+    }
+
+    // depending on what did we get, bind to a keyboard action to use when pressed
+    switch (item.type) {
+      case ITEM_TYPES.TYPES.CONSUMABLE:
+        this.registerCharacterAction(CHARACTER_ACTIONS.USE_ITEM, item.id);
+        break;
+      case ITEM_TYPES.TYPES.WEAPON:
+        this.registerCharacterAction(CHARACTER_ACTIONS.ATTACK, item.id);
+        break;
+      default:
+        break;
     }
 
     EventBus.publish('character.inventory.update', this.inventory);

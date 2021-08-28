@@ -16,6 +16,7 @@ export default class TileMap extends Container {
   setup() {
     const map = this.options.config;
 
+    // generate textures
     for (let i = 0; i < (map.pxHorizontal / map.tileSize) * (map.pxVertical / map.tileSize); i++) {
       let x = i % 14;
       let y = Math.floor(i / 14);
@@ -25,6 +26,7 @@ export default class TileMap extends Container {
       );
     }
 
+    // generate sprites and add to container
     for (let y = 0; y < map.height; y++) {
       for (let x = 0; x < map.width; x++) {
         const tile = map.tiles[y * map.width + x];
