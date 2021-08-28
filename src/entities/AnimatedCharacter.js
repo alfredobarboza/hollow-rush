@@ -20,21 +20,19 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.autoUpdate = false;
     this.interactive = true;
     this.frameMap = options.frameMap;
-    this.speed = 0; // starting speed
-    this.maxSpeed = 1; // max speed - tiles per second
     this.speedMultiplier = options.speedMultiplier || 32; // depends on tile size - default: 32
     this.inventory = [];
     this.width = options.width;
     this.height = options.height;
-    this.stats = DataModule.charSheets.find(charClass => charClass.name === options.class);
+    this.stats = DataModule.charSheets.find(charClass => charClass.name === options.class);    
   }
 
   getSpeed() {
-    return this.speed;
+    return this.stats.speed;
   }
 
   setSpeed(speed) {
-    this.speed = speed;
+    this.stats.speed = speed;
   }
 
   animate(direction) {
@@ -51,11 +49,11 @@ export default class AnimatedCharacter extends AnimatedSprite {
 
     // move the character to the correct direction and update animation frame
     const axis = isHorizontal ? 'x' : 'y';
-    const acceleration = this.getAcceleration(this.speed, this.maxSpeed * this.speedMultiplier);
-    const newPosition = this.calculateDisplacement(this.position[axis], this.speed, acceleration, isPositive);
+    const acceleration = this.getAcceleration(this.stats.speed, this.stats.maxSpeed * this.speedMultiplier);
+    const newPosition = this.calculateDisplacement(this.position[axis], this.stats.speed, acceleration, isPositive);
 
     this.position[axis] = newPosition;
-    this.speed += acceleration;
+    this.stats.speed += acceleration;
 
     EventBus.publish('character.move', this);
   }
