@@ -134,7 +134,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.position.set(posX, posY);
   }
 
-  takeDamage(amount) {
+  takeDamage(amount = 1) {
     if (amount >= this.currentState.hp) {
       this.takeFatalDamage();
     } else {
