@@ -11,11 +11,16 @@ class SoundModule {
 
   }
 
-  play(audioName) {
+  play(audioName, volume) {
     const audio = this.sounds.find(sound => sound.name === audioName);
-    if (audio) {
-      audio.play();
+
+    if (!audio) return;
+    
+    if (volume) {
+      audio.volume(volume);
     }
+    
+    audio.play();
   }
 
 }

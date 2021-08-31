@@ -1,7 +1,6 @@
 export default class MapSequencer {
   constructor(maps) {
     this.maps = maps;
-    this.currentMap = 0;
     this.currentMapIndex = 0;
 
     this.generator = this.generateMapSequence();

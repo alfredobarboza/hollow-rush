@@ -14,6 +14,8 @@ export default class KeyboardModule {
     const KEYS = getMovementKeys(wasd);
 
     document.addEventListener('keydown', e => {
+      if (!character.parent) return;
+
       const currentMap = app.stage.children.find(child => child instanceof TileMap && child.visible);
       const mapCfg = currentMap.options.config;
       const currentTile = Math.floor(character.getBounds().y / mapCfg.tileSize) * mapCfg.width + Math.floor(character.getBounds().x / mapCfg.tileSize);
@@ -52,9 +54,9 @@ export default class KeyboardModule {
     });
 
     document.addEventListener('keyup', e => {
-      if (Object.values(KEYS).includes(e.key)) {
-        character.setSpeed(Math.floor(character.getSpeed() * 0.2));
-      }
+      if (!character.parent || !Object.values(KEYS).includes(e.key)) return;
+
+      character.setSpeed(Math.floor(character.getSpeed() * 0.2));
     });
   }
 

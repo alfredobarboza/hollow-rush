@@ -1,6 +1,6 @@
 import { Application, settings, SCALE_MODES } from 'pixi.js';
 import { maps, enums } from './config';
-import { KeyboardModule, SoundModule, Utils, MapSequencer } from './modules';
+import { KeyboardModule, SoundModule, Utils, MapSequencer, EventBus, UIModule } from './modules';
 import { AnimatedCharacter, TileMap, Weapon, Item, ConsumableItem } from './entities';
 
 settings.SCALE_MODE = SCALE_MODES.NEAREST;
@@ -10,6 +10,7 @@ const ITEM_TYPES = enums.itemTypes;
 
 // Create the application helper and add its render target to the page
 const app = new Application({ width: 1024, height: 768, antialias: true });
+app.stage.sortableChildren = true;
 document.querySelector('#game').appendChild(app.view);
 
 app.renderer.view.style.position = 'absolute';
@@ -36,6 +37,17 @@ const portal = new Item({
   grabbable: false
 });
 
+const hazard = new Item({
+  name: ITEM_TYPES.SPECIALS.WARNING,
+  spriteUrl: '/assets/items/warning.png',
+  type: ITEM_TYPES.TYPES.SPECIAL,
+  grabbable: false
+});
+
+app.loader.onComplete.add(() => {
+  EventBus.publish('app.load', { stage: app.stage });
+});
+
 app.loader
   .add('spritesheet', 'assets/chars/knight.json')
   .load((loader, resources) => {
@@ -59,10 +71,14 @@ app.loader
 
     keyboard.registerMovement(app, defaultChar);
 
-    firstMap.add(defaultChar, 32, 32);
     firstMap.add(axe, 64, 32);
     firstMap.add(healPotion, 128, 32);
     firstMap.add(portal, firstMap.width - 64, firstMap.height - 64);
+    firstMap.add(hazard, 256, 256);
+    firstMap.add(defaultChar, 32, 32);
+
+    UIModule.displayHealthBar(defaultChar);
+    UIModule.displayInventory(defaultChar);
 
     app.stage.addChild(mapSequencer.getCurrent());
 
@@ -74,10 +90,12 @@ app.loader
       SoundModule.play('intro');
     }
 
+    hazard.onCollision = () => defaultChar.takeDamage(10);
+
     //SoundModule.play('intro');
 
     Utils.renderVersionIndicator(app.stage);
   });
 
 Utils.debugEvents();
-Utils.displayOuterInventory();
+//Utils.displayOuterInventory();
