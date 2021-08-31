@@ -14,7 +14,8 @@ export const itemTypes = {
     KEY: 'key'
   },
   SPECIALS: {
-    TELEPORTER: 'teleporter'
+    TELEPORTER: 'teleporter',
+    WARNING: 'warning'
   },
 };
 

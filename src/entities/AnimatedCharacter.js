@@ -3,6 +3,7 @@ import { characterActions as CHARACTER_ACTIONS, itemTypes as ITEM_TYPES } from "
 import { EventBus, KeyboardModule, SoundModule, DataModule } from "../modules";
 import { v4 as UUID } from 'uuid';
 
+const MAX_INVENTORY_SIZE = 8;
 const BASE_ACCELERATION = 1;
 const keyboard = new KeyboardModule();
 /**
@@ -23,7 +24,8 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.inventory = [];
     this.width = options.width;
     this.height = options.height;
-    this.stats = DataModule.charSheets.find(charClass => charClass.name === options.class);    
+    this.stats = DataModule.charSheets.find(charClass => charClass.name === options.class);
+    this.currentState = { hp: this.stats.hp, alive: true };
   }
 
   getSpeed() {
@@ -80,7 +82,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
 
   handleInteraction(entity) {
     // check if entity can be added to inventory
-    if (entity.grabbable) {
+    if (entity.grabbable && this.inventory.length < MAX_INVENTORY_SIZE) {
       SoundModule.play('grabItem');
       const amount = entity.stackSize || 1;
 
@@ -96,12 +98,12 @@ export default class AnimatedCharacter extends AnimatedSprite {
 
   addToInventory(item, qtty) {
     // check if incoming item is already in the inventory
-    const hasInputItem = this.inventory.some(currItem => currItem.id === item.id);
+    const hasInputItem = this.inventory.some(currItem => currItem.name === item.name);
 
     // adds qtty to existing item or add item from scratch
     if (hasInputItem) {
       this.inventory = this.inventory.map(currItem => {
-        if (currItem.id === item.id) {
+        if (currItem.name === item.name) {
           const qttyExceeds = item.quantity + qtty > currItem.maxStackSize;
           currItem.quantity = qttyExceeds ? currItem.maxStackSize : currItem.quantity + qtty;
         }
@@ -130,6 +132,25 @@ export default class AnimatedCharacter extends AnimatedSprite {
 
   setPosition(posX, posY) {
     this.position.set(posX, posY);
+  }
+
+  takeDamage(amount) {
+    if (amount >= this.currentState.hp) {
+      this.takeFatalDamage();
+    } else {
+      this.currentState.hp -= amount;
+      SoundModule.play('hit');
+      EventBus.publish('character.state.update', this.currentState);
+    }
+  }
+
+  takeFatalDamage() {
+    this.currentState.hp = 0;
+    this.currentState.alive = false;
+
+    SoundModule.play('gameover');
+    EventBus.publish('character.state.update', this.currentState);
+    this.container.remove(this);
   }
 
   registerCharacterAction(actionType, itemId) {

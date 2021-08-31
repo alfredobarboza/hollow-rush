@@ -2,9 +2,20 @@ import { Text, TextStyle } from 'pixi.js';
 
 export default class TextModule extends Text {
   constructor(text, style = {}) {
-    super(text, new TextStyle(style));
+    const defaultStyle = {
+      fontFamily: 'Georgia',
+      fontSize: 12, 
+      fill: 0xFFFFFF, 
+      fontWeight: 'bold', 
+      stroke: 0x000000, 
+      strokeThickness: 1 
+    };
 
-    this.style = style;
+    const textStyle = { ...defaultStyle, ...style };
+
+    super(text, new TextStyle(textStyle));
+
+    this.style = textStyle;
     this.visible = false;
     this.lastContainer = null;
   }

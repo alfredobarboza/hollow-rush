@@ -4,17 +4,7 @@ import EventBus from './EventBus';
 class Utils {
   renderVersionIndicator(container, dark = false) {
     const padding = 5;
-    const indicator = new TextModule(
-      `Hollow Rush - Version ${APP_VERSION} (c) Firelink Solutions`, 
-      {
-        fontFamily: 'Georgia',
-        fontSize: 12, 
-        fill: 0xFFFFFF, 
-        fontWeight: 'bold', 
-        stroke: 0x000000, 
-        strokeThickness: 1 
-      }
-    );
+    const indicator = new TextModule(`Hollow Rush - Version ${APP_VERSION} (c) Firelink Solutions`);
 
     if (dark) {
       indicator.changeStyle({ fill: 0x000000, stroke: 0xFFFFFF });
@@ -73,6 +63,10 @@ class Utils {
         testDiv.appendChild(container);
       });
     });
+  }
+
+  capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 }
 
