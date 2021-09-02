@@ -7,6 +7,7 @@ settings.SCALE_MODE = SCALE_MODES.NEAREST;
 
 const keyboard = new KeyboardModule();
 const ITEM_TYPES = enums.itemTypes;
+const AUDIO = enums.audioBytes;
 
 // Create the application helper and add its render target to the page
 const app = new Application({ width: 1024, height: 768, antialias: true });
@@ -87,12 +88,12 @@ app.loader
       
       nextMap.add(defaultChar, 256, 256);
       app.stage.addChild(nextMap);
-      SoundModule.play('intro');
+      SoundModule.play(AUDIO.INTRO);
     }
 
     hazard.onCollision = () => defaultChar.takeDamage(10);
 
-    //SoundModule.play('intro');
+    //SoundModule.play(AUDIO.INTRO);
 
     Utils.renderVersionIndicator(app.stage);
   });

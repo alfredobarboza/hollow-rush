@@ -9,7 +9,8 @@ class DataModule {
       { name: 'intro', src: '/assets/audios/examplec.wav', loop: false, volume: 0.1 },
       { name: 'grabItem', src: '/assets/audios/grabItem.wav', loop: false, volume: 0.1 },
       { name: 'hit', src: '/assets/audios/hit.wav', loop: false, volume: 0.1 },
-      { name: 'gameover', src: '/assets/audios/gameover.wav', loop: false, volume: 0.1 }
+      { name: 'drinkPotion', src: '/assets/audios/drink-potion.wav', loop: false, volume: 0.1 },
+      { name: 'gameOver', src: '/assets/audios/gameover.wav', loop: false, volume: 0.1 }
     ];
 
     this.charSheets = [
@@ -19,7 +20,7 @@ class DataModule {
         hp: 85,
         mana: 50,
         speed: 0,
-        maxSpeed:1
+        maxSpeed: 1
       },
       {
         name: 'gladiator',
@@ -27,7 +28,7 @@ class DataModule {
         hp: 150,
         mana: 20,
         speed: 0,
-        maxSpeed:1
+        maxSpeed: 1
       },
       {
         name: 'paladin',
@@ -35,7 +36,7 @@ class DataModule {
         hp: 120,
         mana: 100,
         speed: 0,
-        maxSpeed:1
+        maxSpeed: 1
       },
       {
         name: 'mage',
@@ -43,7 +44,7 @@ class DataModule {
         hp: 80,
         mana: 150,
         speed: 0,
-        maxSpeed:1
+        maxSpeed: 1
       },
       {
         name: 'undead',
@@ -51,7 +52,7 @@ class DataModule {
         hp: 200,
         mana: 0,
         speed: 0,
-        maxSpeed:1
+        maxSpeed: 1
       },
     ]
   }
