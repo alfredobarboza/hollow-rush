@@ -1,5 +1,9 @@
 import { AnimatedSprite, Ticker } from "pixi.js";
-import { characterActions as CHARACTER_ACTIONS, itemTypes as ITEM_TYPES } from "../config/enums";
+import {
+  characterActions as CHARACTER_ACTIONS,
+  itemTypes as ITEM_TYPES,
+  audioBytes as AUDIO
+} from "../config/enums";
 import { EventBus, KeyboardModule, SoundModule, DataModule } from "../modules";
 import { v4 as UUID } from 'uuid';
 
@@ -83,7 +87,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
   handleInteraction(entity) {
     // check if entity can be added to inventory
     if (entity.grabbable && this.inventory.length < MAX_INVENTORY_SIZE) {
-      SoundModule.play('grabItem');
+      SoundModule.play(AUDIO.GRAB_ITEM);
       const amount = entity.stackSize || 1;
 
       this.addToInventory(entity, amount);
@@ -139,7 +143,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
       this.takeFatalDamage();
     } else {
       this.currentState.hp -= amount;
-      SoundModule.play('hit');
+      SoundModule.play(AUDIO.HIT);
       EventBus.publish('character.state.update', this.currentState);
     }
   }
@@ -148,9 +152,27 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.currentState.hp = 0;
     this.currentState.alive = false;
 
-    SoundModule.play('gameover');
+    SoundModule.play(AUDIO.GAME_OVER);
     EventBus.publish('character.state.update', this.currentState);
     this.container.remove(this);
+  }
+
+  heal(amount) {
+    // if at max HP don't heal
+    if (this.currentState.hp === this.stats.hp) return false;
+
+    // if after healing we go over the max HP
+    // top up HP
+    if (amount + this.currentState.hp >= this.stats.hp) {
+      this.currentState.hp = this.stats.hp;
+      // otherwise add pot healing amount
+    } else {
+      this.currentState.hp += amount;
+    }
+
+    SoundModule.play(AUDIO.DRINK_POTION);
+    EventBus.publish('character.state.update', this.currentState);
+    return true;
   }
 
   registerCharacterAction(actionType, itemId) {
@@ -165,20 +187,22 @@ export default class AnimatedCharacter extends AnimatedSprite {
       case CHARACTER_ACTIONS.USE_ITEM.NAME:
         key = CHARACTER_ACTIONS.USE_ITEM.KEY;
         action = () => {
-          // check if potions are available
-          const hasQtty = this.inventory.some(item => item.id === itemId && item.quantity > 1);
+          // check if item has qtty
+          const hasQtty = this.inventory.some(item => item.id === itemId && item.quantity >= 1);
           if (hasQtty) {
             this.inventory = this.inventory.map(item => {
-              if (item.name === 'potion') {
-                item.quantity--;
+              if (item.name === ITEM_TYPES.CONSUMABLES.POTION) {
+                let hasHealed = this.heal(10);
+                if (hasHealed) item.quantity--;
               }
-
               return item;
-            });
+            }).filter(updatedItems => !!updatedItems.quantity);
+
           } else {
             this.inventory = this.inventory.filter(item => item.id !== itemId);
           }
 
+          console.log(this.inventory);
           EventBus.publish('character.inventory.update', this.inventory);
         }
         break;

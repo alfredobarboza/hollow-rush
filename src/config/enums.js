@@ -16,8 +16,16 @@ export const itemTypes = {
   SPECIALS: {
     TELEPORTER: 'teleporter',
     WARNING: 'warning'
-  },
+  }
 };
+
+export const audioBytes = {
+  INTRO: 'intro',
+  GRAB_ITEM: 'grabItem',
+  HIT: 'hit',
+  DRINK_POTION: 'drinkPotion',
+  GAME_OVER: 'gameOver'
+}
 
 export const characterActions = {
   ATTACK: {
@@ -32,5 +40,6 @@ export const characterActions = {
 
 export default {
   itemTypes,
-  characterActions
+  characterActions,
+  audioBytes
 };
