@@ -202,7 +202,6 @@ export default class AnimatedCharacter extends AnimatedSprite {
             this.inventory = this.inventory.filter(item => item.id !== itemId);
           }
 
-          console.log(this.inventory);
           EventBus.publish('character.inventory.update', this.inventory);
         }
         break;
