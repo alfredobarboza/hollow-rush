@@ -1,7 +1,7 @@
 import { Application, settings, SCALE_MODES } from 'pixi.js';
 import { maps, enums } from './config';
 import { KeyboardModule, SoundModule, Utils, MapSequencer, EventBus, UIModule } from './modules';
-import { AnimatedCharacter, TileMap, Weapon, Item, ConsumableItem } from './entities';
+import { AnimatedCharacter, TileMap, Weapon, Item, Potion } from './entities';
 
 settings.SCALE_MODE = SCALE_MODES.NEAREST;
 
@@ -24,11 +24,12 @@ const axe = new Weapon({
   spriteUrl: '/assets/items/axe.png'
 });
 
-const healPotion = new ConsumableItem({
+const healPotion = new Potion({
   name: ITEM_TYPES.CONSUMABLES.POTION,
   spriteUrl: '/assets/items/potion.png',
   type: ITEM_TYPES.TYPES.CONSUMABLE,
-  stackSize: 10
+  stackSize: 10,
+  soundSpriteUrl: AUDIO.DRINK_POTION
 });
 
 const portal = new Item({
@@ -55,7 +56,7 @@ app.loader
     const firstMap = new TileMap({ config: maps.FIRST_ARENA, tilesetUrl: 'assets/maps/map_tileset_32x32.png' });
     const specialMap = new TileMap({ config: maps.SPECIAL_MAP, tilesetUrl: 'assets/maps/map_tileset_32x32.png' });
 
-    const mapSequencer = new MapSequencer([ firstMap, specialMap ]);
+    const mapSequencer = new MapSequencer([firstMap, specialMap]);
 
     const defaultChar = new AnimatedCharacter({
       textures: Object.values(resources.spritesheet.textures),
@@ -85,7 +86,7 @@ app.loader
 
     portal.onCollision = () => {
       const nextMap = mapSequencer.loadNext();
-      
+
       nextMap.add(defaultChar, 256, 256);
       app.stage.addChild(nextMap);
       SoundModule.play(AUDIO.INTRO);
