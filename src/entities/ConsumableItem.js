@@ -5,8 +5,7 @@ export default class ConsumableItem extends Item {
     super(options);
     
     this.soundSprite = options.soundSpriteUrl || null;
-    this.healVal = options.healVal;
-    this.quantity = 1;
+    this.quantity = options.quantity || 1;
     this.maxStack = options.maxStack || 10;
     this.stackSize = options.stackSize || 1;
   }
@@ -14,8 +13,6 @@ export default class ConsumableItem extends Item {
   getItemProperties() {
     return {
       ...super.getItemProperties(),
-      soundSprite: 1,
-      healVal: 1,
       quantity: this.quantity
     };
   }

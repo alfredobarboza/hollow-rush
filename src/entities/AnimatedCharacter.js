@@ -192,7 +192,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
           if (hasQtty) {
             this.inventory = this.inventory.map(item => {
               if (item.name === ITEM_TYPES.CONSUMABLES.POTION) {
-                let hasHealed = this.heal(10);
+                let hasHealed = this.heal(item.healVal);
                 if (hasHealed) item.quantity--;
               }
               return item;
