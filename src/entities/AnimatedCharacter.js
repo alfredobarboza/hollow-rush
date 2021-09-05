@@ -30,6 +30,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.height = options.height;
     this.stats = DataModule.charSheets.find(charClass => charClass.name === options.class);
     this.currentState = { hp: this.stats.hp, alive: true };
+    this.netDps = 0; // calculation to apply damage to other entities
   }
 
   getSpeed() {
@@ -38,6 +39,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
 
   setSpeed(speed) {
     this.stats.speed = speed;
+
   }
 
   animate(direction) {
@@ -175,13 +177,47 @@ export default class AnimatedCharacter extends AnimatedSprite {
     return true;
   }
 
+  attack() {
+    let charWeapon, dpsMultiplier;
+    dpsMultiplier = this.stats.attackValue;
+
+    // sort available weapons and return the one equipped
+    charWeapon = this.inventory.filter(item =>
+      item.name === ITEM_TYPES.WEAPONS.AXE ||
+      item.name === ITEM_TYPES.WEAPONS.MACE ||
+      item.name === ITEM_TYPES.WEAPONS.SWORD
+    ).find(item => item.isEquipped);
+
+    // calculate net dps to affect other entity
+    this.netDps = charWeapon.attackVal * dpsMultiplier;
+
+    // create attack sprite
+    // const attackSprite = new AnimatedSprite(this.testSprite, false);
+    // attackSprite.height = this.height;
+    // attackSprite.width = this.width;
+
+    // append to parent container
+    // this.parent.addChild(attackSprite);
+
+    // detect which direction the character is facing and display correct sprite
+    // WIP
+    // attackSprite.position['x'] = true ? this.position['x'] + 32 : this.position['x'];
+    // attackSprite.position['y'] = true ? this.position['y'] : this.position['y'] + 32;
+
+
+    SoundModule.play(AUDIO.ATTACK);
+
+  }
+
   registerCharacterAction(actionType, itemId) {
     let key, action;
     switch (actionType.NAME) {
       case CHARACTER_ACTIONS.ATTACK.NAME:
         key = CHARACTER_ACTIONS.ATTACK.KEY;
         action = () => {
-          console.log('ATTACK!');
+          this.attack();
+          // publish event to affect other entities
+          //EventBus.publish('character.attack', this);
         }
         break;
       case CHARACTER_ACTIONS.USE_ITEM.NAME:
