@@ -70,8 +70,7 @@ app.loader
       },
       width: 32,
       height: 32,
-      class: 'rogue',
-      testSprite: Object.values(resources.attackSpritesheet.textures)
+      class: 'rogue'
     });
 
     keyboard.registerMovement(app, defaultChar);
