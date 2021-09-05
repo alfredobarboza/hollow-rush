@@ -8,6 +8,7 @@ settings.SCALE_MODE = SCALE_MODES.NEAREST;
 const keyboard = new KeyboardModule();
 const ITEM_TYPES = enums.itemTypes;
 const AUDIO = enums.audioBytes;
+const SPRITES = enums.spriteUrls;
 
 // Create the application helper and add its render target to the page
 const app = new Application({ width: 1024, height: 768, antialias: true });
@@ -21,26 +22,26 @@ app.renderer.view.style.padding = 0;
 const axe = new Weapon({
   name: ITEM_TYPES.WEAPONS.AXE,
   type: ITEM_TYPES.TYPES.WEAPON,
-  spriteUrl: '/assets/items/axe.png'
+  spriteUrl: SPRITES.AXE_SPRITE
 });
 
 const healPotion = new ConsumableItem({
   name: ITEM_TYPES.CONSUMABLES.POTION,
-  spriteUrl: '/assets/items/potion.png',
+  spriteUrl: SPRITES.POTION_SPRITE,
   type: ITEM_TYPES.TYPES.CONSUMABLE,
   stackSize: 10
 });
 
 const portal = new Item({
   name: ITEM_TYPES.SPECIALS.TELEPORTER,
-  spriteUrl: '/assets/items/portal.png',
+  spriteUrl: SPRITES.PORTAL_SPRITE,
   type: ITEM_TYPES.TYPES.SPECIAL,
   grabbable: false
 });
 
 const hazard = new Item({
   name: ITEM_TYPES.SPECIALS.WARNING,
-  spriteUrl: '/assets/items/warning.png',
+  spriteUrl: SPRITES.WARNING_SPRITE,
   type: ITEM_TYPES.TYPES.SPECIAL,
   grabbable: false
 });
@@ -50,10 +51,11 @@ app.loader.onComplete.add(() => {
 });
 
 app.loader
-  .add('spritesheet', 'assets/chars/knight.json')
+  .add('spritesheet', SPRITES.CHAR_SPRITESHEET)
+  .add('attackSpritesheet', SPRITES.ATTACK_SPRITESHEET)
   .load((loader, resources) => {
-    const firstMap = new TileMap({ config: maps.FIRST_ARENA, tilesetUrl: 'assets/maps/map_tileset_32x32.png' });
-    const specialMap = new TileMap({ config: maps.SPECIAL_MAP, tilesetUrl: 'assets/maps/map_tileset_32x32.png' });
+    const firstMap = new TileMap({ config: maps.FIRST_ARENA, tilesetUrl:  SPRITES.ARENA_MAP});
+    const specialMap = new TileMap({ config: maps.SPECIAL_MAP, tilesetUrl: SPRITES.ENDING_MAP });
 
     const mapSequencer = new MapSequencer([ firstMap, specialMap ]);
 
@@ -67,7 +69,8 @@ app.loader
       },
       width: 32,
       height: 32,
-      class: 'rogue'
+      class: 'rogue',
+      testSprite: Object.values(resources.attackSpritesheet.textures)
     });
 
     keyboard.registerMovement(app, defaultChar);

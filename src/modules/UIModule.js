@@ -18,19 +18,19 @@ class UIModule {
   }
 
   healthBar = {
-    displayProps: { 
-      x: 680, y: 45, 
-      width: 300, height: 30 
+    displayProps: {
+      x: 680, y: 45,
+      width: 300, height: 30
     },
     draw: charState => {
       const { x, y, width, height } = this.healthBar.displayProps;
-      
+
       const hpContainer = new Container();
       hpContainer.type = 'health';
 
       const { hp: currentHp } = charState;
       const { maxHp } = this.healthBar;
-      
+
       // create two rectangles, one for bar background (offset) and one for actual % state
       const hpPercent = (currentHp / maxHp).toFixed(2);
       const barOffset = new Graphics().beginFill(0x333333).drawRect(x, y, width, height).endFill();
@@ -62,16 +62,16 @@ class UIModule {
   }
 
   inventory = {
-    displayProps: { 
-      x: 827, y: 85, 
-      width: 153, height: 79 
+    displayProps: {
+      x: 827, y: 85,
+      width: 153, height: 79
     },
     draw: charInventory => {
       const { x, y, width, height } = this.inventory.displayProps;
-      
+
       const invContainer = new Container();
       invContainer.type = 'inventory';
-      
+
       // create inventory box
       const box = new Container();
       box.alpha = 0.8;

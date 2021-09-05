@@ -10,6 +10,7 @@ class DataModule {
       { name: 'grabItem', src: '/assets/audios/grabItem.wav', loop: false, volume: 0.1 },
       { name: 'hit', src: '/assets/audios/hit.wav', loop: false, volume: 0.1 },
       { name: 'drinkPotion', src: '/assets/audios/drink-potion.wav', loop: false, volume: 0.1 },
+      { name: 'attack', src: '/assets/audios/attack.wav', loop: false, volume: 0.1 },
       { name: 'gameOver', src: '/assets/audios/gameover.wav', loop: false, volume: 0.1 }
     ];
 
