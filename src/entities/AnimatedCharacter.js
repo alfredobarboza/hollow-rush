@@ -30,7 +30,6 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.height = options.height;
     this.stats = DataModule.charSheets.find(charClass => charClass.name === options.class);
     this.currentState = { hp: this.stats.hp, alive: true };
-    this.testSprite = options.testSprite;
     this.netDps = 0; // calculation to apply damage to other entities
   }
 
@@ -193,17 +192,17 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.netDps = charWeapon.attackVal * dpsMultiplier;
 
     // create attack sprite
-    const attackSprite = new AnimatedSprite(this.testSprite, false);
-    attackSprite.height = this.height;
-    attackSprite.width = this.width;
+    // const attackSprite = new AnimatedSprite(this.testSprite, false);
+    // attackSprite.height = this.height;
+    // attackSprite.width = this.width;
 
     // append to parent container
-    this.parent.addChild(attackSprite);
+    // this.parent.addChild(attackSprite);
 
     // detect which direction the character is facing and display correct sprite
     // WIP
-    attackSprite.position['x'] = true ? this.position['x'] + 32 : this.position['x'];
-    attackSprite.position['y'] = true ? this.position['y'] : this.position['y'] + 32;
+    // attackSprite.position['x'] = true ? this.position['x'] + 32 : this.position['x'];
+    // attackSprite.position['y'] = true ? this.position['y'] : this.position['y'] + 32;
 
 
     SoundModule.play(AUDIO.ATTACK);
