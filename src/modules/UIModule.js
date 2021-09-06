@@ -149,7 +149,7 @@ class UIModule {
     display: character => {
       this.inventory.draw(character.inventory);
 
-      EventBus.subscribe('character.inventory.update', this.inventory.update);
+      EventBus.subscribe('player.inventory.update', this.inventory.update);
     },
     update: charInventory => {
       const existantDisplay = this.uiContainer.children.find(child => child.type === 'inventory');

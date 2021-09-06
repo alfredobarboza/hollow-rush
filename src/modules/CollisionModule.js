@@ -1,3 +1,5 @@
+import { directions as DIRECTIONS } from '../config/enums';
+
 /*
 Derived from bump library: https://github.com/kittykatattack/bump
 Converted into ES6 module 
@@ -1104,6 +1106,38 @@ class CollisionModule {
         return true;
       }
     }
+  }
+
+  hitTestMapTile(mapCfg, character, direction) {
+    // determine map x and y values based on character position
+    const { x: charX, y: charY } = character.getBounds();
+    const mapX = Math.floor(charX / mapCfg.tileSize);
+    const mapY = Math.floor(charY / mapCfg.tileSize);
+
+    // current tile in the sequential array
+    const currentTile = mapY * mapCfg.width + mapX;
+
+    // get next tile to which the char is attempting to move
+    let nextTile = 0;
+    switch (direction) {
+      case DIRECTIONS.RIGHT:
+        nextTile = currentTile + 1;
+        break;
+      case DIRECTIONS.LEFT:
+        nextTile = currentTile - 1;
+          break;
+      case DIRECTIONS.TOP:
+        nextTile = currentTile - mapCfg.width;
+        break;
+      case DIRECTIONS.BOTTOM:
+        nextTile = currentTile + mapCfg.width;
+        break;
+      default:
+        break;
+    }
+
+    // return whether it collides or not
+    return mapCfg.collision[nextTile];
   }
 
 }

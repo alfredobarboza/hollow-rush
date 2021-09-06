@@ -1,4 +1,7 @@
+import { mapNames as MAPS } from './enums';
+
 const FIRST_ARENA = {
+  name: MAPS.FIRST_ARENA,
   width: 32,
   height: 24,
   tiles: [
@@ -62,6 +65,7 @@ const FIRST_ARENA = {
 
 // used to develop map progression system, will not be used in the future
 const SPECIAL_MAP = {
+  name: MAPS.ENDING,
   width: 32,
   height: 24,
   tiles: [
