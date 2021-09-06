@@ -6,7 +6,7 @@ import Utils from './Utils';
 class UIModule {
   constructor() {
     this.uiContainer = new Container();
-    this.uiContainer.zIndex = 1;
+    this.uiContainer.zIndex = 9;
     this.uiContainer.sortableChildren = true;
 
     EventBus.subscribe('app.load', ({ stage }) => {
