@@ -7,8 +7,10 @@ export default class TileMap extends Container {
 
     this.name = options.config.name;
     this.options = options;
+    this.sortableChildren = true;
     this.tileTextures = [];
     this.mapContainer = new Container();
+    this.mapContainer.zIndex = 1;
     this.mapEntities = [];
 
     this.setup();
