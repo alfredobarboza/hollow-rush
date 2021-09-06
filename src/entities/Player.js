@@ -83,6 +83,11 @@ export default class Player extends AnimatedCharacter {
     EventBus.publish('player.inventory.update', this.inventory);
   }
 
+  takeFatalDamage() {
+    super.takeFatalDamage();
+    SoundModule.play(AUDIO.GAME_OVER);
+  }
+
   registerPlayerAction(actionType, itemId) {
     let key, action;
     switch (actionType.NAME) {
@@ -125,7 +130,7 @@ export default class Player extends AnimatedCharacter {
   }
 
   tickerLoop = () => {
-    if (!keyboard.lastMovementDirection) return;
+    if (!keyboard.lastMovementDirection || !this.currentState.alive) return;
     
     const boundaryCollision = CollisionModule.contain(this, this.container);
     const mapTileCollision = CollisionModule.hitTestMapTile(this.container.options.config, this, keyboard.lastMovementDirection);

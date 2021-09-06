@@ -90,7 +90,6 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.currentState.hp = 0;
     this.currentState.alive = false;
 
-    SoundModule.play(AUDIO.GAME_OVER);
     EventBus.publish('character.state.update', this.currentState);
     this.container.remove(this);
   }
