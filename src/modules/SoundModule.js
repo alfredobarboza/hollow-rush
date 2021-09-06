@@ -23,6 +23,14 @@ class SoundModule {
     audio.play();
   }
 
+  stop(audioName) {
+    const audio = this.sounds.find(sound => sound.name === audioName);
+
+    if (!audio) return;
+    
+    audio.stop();
+  }
+
 }
 
 export default new SoundModule();

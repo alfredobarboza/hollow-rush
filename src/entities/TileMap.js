@@ -5,6 +5,7 @@ export default class TileMap extends Container {
   constructor(options) {
     super();
 
+    this.name = options.config.name;
     this.options = options;
     this.tileTextures = [];
     this.mapContainer = new Container();
@@ -64,7 +65,7 @@ export default class TileMap extends Container {
   add(entity, x, y) {
     EventBus.publish('map.entity.add', entity);
 
-    entity.setPosition(x, y);
+    entity.position.set(x, y);
     entity.container = this;
 
     this.mapEntities = [...this.mapEntities, entity];

@@ -1,5 +1,7 @@
 import TextModule from './TextModule';
 import EventBus from './EventBus';
+import DataModule from './DataModule';
+import { directions as DIRECTIONS } from '../config/enums';
 
 class Utils {
   renderVersionIndicator(container, dark = false) {
@@ -39,7 +41,7 @@ class Utils {
     gameDataElem.appendChild(title);
     gameDataElem.appendChild(itemsContainer);
 
-    EventBus.subscribe('character.inventory.#', inventory => {
+    EventBus.subscribe('player.inventory.#', inventory => {
       const testDiv = document.querySelector('.inventory');
       testDiv.innerHTML = '';
     
@@ -67,6 +69,26 @@ class Utils {
 
   capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  loadGameEntitiesToMap(map) {
+    DataModule.gameEntities.forEach(entity => {
+      if (map.name === entity.map.name) {
+        const Model = entity.model;
+        const instance = new Model({ ...entity.props });
+
+        map.add(instance, entity.map.x, entity.map.y);
+      }
+    });
+  }
+
+  getOppositeDirection(direction) {
+    if (!direction) return null;
+
+    if (direction === DIRECTIONS.LEFT) return DIRECTIONS.RIGHT;
+    if (direction === DIRECTIONS.RIGHT) return DIRECTIONS.LEFT;
+    if (direction === DIRECTIONS.TOP) return DIRECTIONS.BOTTOM;
+    if (direction === DIRECTIONS.BOTTOM) return DIRECTIONS.TOP;
   }
 }
 

@@ -1,62 +1,56 @@
-import CollisionModule from './CollisionModule';
-import SoundModule from './SoundModule';
-import TileMap from '../entities/TileMap';
+import { characterActions as CHARACTER_ACTIONS, directions as DIRECTIONS } from '../config/enums';
 
-const getMovementKeys = wasd => ({
-  RIGHT: wasd ? 'd' : 'ArrowRight',
-  LEFT: wasd ? 'a' : 'ArrowLeft',
-  DOWN: wasd ? 's' : 'ArrowDown',
-  UP: wasd ? 'w' : 'ArrowUp'
+const getMovementKeys = alt => ({
+  RIGHT: alt ? CHARACTER_ACTIONS.MOVE_RIGHT.ALT_KEY : CHARACTER_ACTIONS.MOVE_RIGHT.KEY,
+  LEFT: alt ? CHARACTER_ACTIONS.MOVE_LEFT.ALT_KEY : CHARACTER_ACTIONS.MOVE_LEFT.KEY,
+  DOWN: alt ? CHARACTER_ACTIONS.MOVE_DOWN.ALT_KEY : CHARACTER_ACTIONS.MOVE_DOWN.KEY,
+  UP: alt ? CHARACTER_ACTIONS.MOVE_UP.ALT_KEY : CHARACTER_ACTIONS.MOVE_UP.KEY
 });
 
 export default class KeyboardModule {
-  registerMovement(app, character, wasd = false) {
-    const KEYS = getMovementKeys(wasd);
+  constructor() {
+    this.lastMovementDirection = null;
+  }
+
+  registerMovement(handlers = {}, alt = false) {
+    const KEYS = getMovementKeys(alt);
+    const isDirectionKey = key => Object.values(KEYS).includes(key);
 
     document.addEventListener('keydown', e => {
-      if (!character.parent) return;
-
-      const currentMap = app.stage.children.find(child => child instanceof TileMap && child.visible);
-      const mapCfg = currentMap.options.config;
-      const currentTile = Math.floor(character.getBounds().y / mapCfg.tileSize) * mapCfg.width + Math.floor(character.getBounds().x / mapCfg.tileSize);
-      const mapBoundsCollision = CollisionModule.contain(character, currentMap, true);
+      if (!isDirectionKey(e.key)) return;
 
       // Add walking sound
-      //SoundModule.play('test2');
+      // if (!this.lastMovementDirection) SoundModule.play(AUDIO.STEPS);
+
       switch (e.key) {
         case KEYS.RIGHT:
-          if (!mapBoundsCollision?.has('right') && !mapCfg.collision[currentTile + 1]) {
-            character.move('right');
-          }
-          character.animate('right');
+          if (handlers[DIRECTIONS.RIGHT]) handlers[DIRECTIONS.RIGHT]();
+          this.lastMovementDirection = DIRECTIONS.RIGHT;
           break;
         case KEYS.LEFT:
-          if (!mapBoundsCollision?.has('left') && !mapCfg.collision[currentTile - 1]) {
-            character.move('left');
-          }
-          character.animate('left');
+          if (handlers[DIRECTIONS.LEFT]) handlers[DIRECTIONS.LEFT]();
+          this.lastMovementDirection = DIRECTIONS.LEFT;
           break;
         case KEYS.DOWN:
-          if (!mapBoundsCollision?.has('bottom') && !mapCfg.collision[currentTile + mapCfg.width]) {
-            character.move('down');
-          }
-          character.animate('down');
+          if (handlers[DIRECTIONS.BOTTOM]) handlers[DIRECTIONS.BOTTOM]();
+          this.lastMovementDirection = DIRECTIONS.BOTTOM;
           break;
-        case KEYS.UP:
-          if (!mapBoundsCollision?.has('top') && !mapCfg.collision[currentTile - mapCfg.width]) {
-            character.move('up');
-          }
-          character.animate('up');
+        case KEYS.UP: 
+          if (handlers[DIRECTIONS.TOP]) handlers[DIRECTIONS.TOP]();
+          this.lastMovementDirection = DIRECTIONS.TOP;
           break;
         default:
           break;
       }
     });
-
+    
     document.addEventListener('keyup', e => {
-      if (!character.parent || !Object.values(KEYS).includes(e.key)) return;
+      if (!isDirectionKey(e.key)) return;
 
-      character.setSpeed(Math.floor(character.getSpeed() * 0.2));
+      // SoundModule.stop(AUDIO.STEPS);
+
+      if (handlers.none) handlers.none();
+      this.lastMovementDirection = null;
     });
   }
 
