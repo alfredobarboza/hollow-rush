@@ -7,9 +7,16 @@ Install dependencies:
 npm i
 ```
 
+#### Running locally
+
 Run on http://localhost:3000:
 ```
 npm start
+```
+
+Run with some debug console logging (eg. events):
+```
+npm run start:debug
 ```
 
 #### Building
