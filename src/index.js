@@ -48,9 +48,9 @@ app.loader
 
     const npc = new NPC({
       textures: Object.values(resources.enemy.textures),
+      name: 'Enemy Knight',
       class: 'paladin',
       frameMap: commonFrameMap,
-      width: 32,
       height: 48,
       movementPattern: {
         directions: 'RRRRTTLLLLBBLLLLLLLLRRRRRRRR',

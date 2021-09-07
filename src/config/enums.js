@@ -33,7 +33,8 @@ export const audioBytes = {
   HIT: 'hit',
   DRINK_POTION: 'drinkPotion',
   ATTACK: 'attack',
-  GAME_OVER: 'gameOver'
+  GAME_OVER: 'gameOver',
+  NPC_DEATH: 'npcDeath'
 };
 
 export const characterActions = {
@@ -95,6 +96,12 @@ export const playerClasses = {
   UNDEAD: 'undead'
 };
 
+export const uiElements = {
+  HEALTH_BAR: 'health',
+  INVENTORY: 'inventory',
+  NPC_DATA: 'npcData'
+};
+
 export default {
   itemTypes,
   characterActions,
@@ -102,5 +109,6 @@ export default {
   spriteUrls,
   mapNames,
   directions,
-  playerClasses
+  playerClasses,
+  uiElements
 };
