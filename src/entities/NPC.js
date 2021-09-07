@@ -1,7 +1,7 @@
 import { Ticker } from 'pixi.js';
 import AnimatedCharacter from './AnimatedCharacter';
-import { characterTypes as CHARACTER_TYPES, directions as DIRECTIONS } from '../config/enums';
-import { Utils, CollisionModule } from '../modules';
+import { characterTypes as CHARACTER_TYPES, directions as DIRECTIONS, audioBytes as AUDIO } from '../config/enums';
+import { Utils, CollisionModule, UIModule, SoundModule } from '../modules';
 
 const ticker = Ticker.shared;
 
@@ -13,7 +13,9 @@ export default class NPC extends AnimatedCharacter {
     this.characterType = this.friendly ? CHARACTER_TYPES.TYPES.FRIENDLY_NPC : CHARACTER_TYPES.TYPES.ENEMY_NPC;
     this.lastMovement = null;
     this.movementPattern = options.movementPattern;
+    this.displayHealth = false;
 
+    this.registerMouseHandlers();
     this.startMoving(this.movementPattern);
   }
 
@@ -33,6 +35,12 @@ export default class NPC extends AnimatedCharacter {
     }
   }
 
+  takeFatalDamage() {
+    super.takeFatalDamage();
+    SoundModule.play(AUDIO.NPC_DEATH);
+    UIModule.npcData.delete();
+  }
+
   startMoving({ directions, timing }) {
     // map direction tokens (R/L/B/T) with actual directions
     const directionMap = { R: DIRECTIONS.RIGHT, L: DIRECTIONS.LEFT, B: DIRECTIONS.BOTTOM, T: DIRECTIONS.TOP };
@@ -44,6 +52,8 @@ export default class NPC extends AnimatedCharacter {
     let tick = 0, lastTick = 0, movementIndex = 0;
 
     ticker.add(delta => {
+      if (!this.currentState.alive) return;
+
       // get the current tick (time after last loop execution) and delay based on set timings
       const currentTick = Math.floor(tick);
       const delay = timings[movementIndex % timings.length];
@@ -73,7 +83,21 @@ export default class NPC extends AnimatedCharacter {
         movementIndex++;
       }
 
+      if (this.displayHealth) UIModule.npcData.update(this);
+
       lastTick = currentTick;
     });
+  }
+
+  registerMouseHandlers = () => {
+    this.mouseover = () => {
+      UIModule.npcData.display(this);
+      this.displayHealth = true;
+    }
+
+    this.mouseout = () => {
+      UIModule.npcData.delete();
+      this.displayHealth = false;
+    }
   }
 }

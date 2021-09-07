@@ -35,12 +35,13 @@ class DataModule {
     ];
 
     this.audioCfg = [
-      { name: AUDIO.INTRO, src: '/assets/audios/examplec.wav', loop: false, volume: 0.1 },
+      { name: AUDIO.INTRO, src: '/assets/audios/intro.wav', loop: false, volume: 0.1 },
       { name: AUDIO.GRAB_ITEM, src: '/assets/audios/grabItem.wav', loop: false, volume: 0.1 },
       { name: AUDIO.HIT, src: '/assets/audios/hit.wav', loop: false, volume: 0.1 },
       { name: AUDIO.DRINK_POTION, src: '/assets/audios/drink-potion.wav', loop: false, volume: 0.1 },
       { name: AUDIO.ATTACK, src: '/assets/audios/attack.wav', loop: false, volume: 0.1 },
-      { name: AUDIO.GAME_OVER, src: '/assets/audios/gameover.wav', loop: false, volume: 0.1 }
+      { name: AUDIO.GAME_OVER, src: '/assets/audios/gameover.wav', loop: false, volume: 0.1 },
+      { name: AUDIO.NPC_DEATH, src: '/assets/audios/npcDeath.wav', loop: false, volume: 0.1 }
     ];
 
     this.charSheets = [

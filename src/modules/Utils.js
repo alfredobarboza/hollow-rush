@@ -90,6 +90,10 @@ class Utils {
     if (direction === DIRECTIONS.TOP) return DIRECTIONS.BOTTOM;
     if (direction === DIRECTIONS.BOTTOM) return DIRECTIONS.TOP;
   }
+
+  getPercentage(curr, total, decimals = 2) {
+    return Math.ceil((curr / total).toFixed(decimals) * 100);
+  }
 }
 
 export default new Utils();

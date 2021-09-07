@@ -2,7 +2,6 @@ import { AnimatedSprite, Ticker } from "pixi.js";
 import {
   itemTypes as ITEM_TYPES,
   audioBytes as AUDIO,
-  characterTypes as CHARACTER_TYPES,
   directions as DIRECTIONS
 } from "../config/enums";
 import { EventBus, SoundModule, DataModule } from "../modules";
@@ -16,7 +15,9 @@ export default class AnimatedCharacter extends AnimatedSprite {
     super(options.textures);
 
     this.id = UUID();
-    this.characterType = options.characterType || CHARACTER_TYPES.TYPES.PLAYER;
+    this.name = options.name;
+    this.characterType = options.characterType;
+    this.interactive = true;
     this.autoUpdate = false;
     this.frameMap = options.frameMap;
     this.inventory = [];
@@ -82,7 +83,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
     } else {
       this.currentState.hp -= amount;
       SoundModule.play(AUDIO.HIT);
-      EventBus.publish('character.state.update', this.currentState);
+      EventBus.publish('character.state.update', { id: this.id, currentState: this.currentState });
     }
   }
 
@@ -90,7 +91,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.currentState.hp = 0;
     this.currentState.alive = false;
 
-    EventBus.publish('character.state.update', this.currentState);
+    EventBus.publish('character.state.update', { id: this.id, currentState: this.currentState });
     this.container.remove(this);
   }
 
@@ -107,7 +108,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
       this.currentState.hp += amount;
     }
 
-    EventBus.publish('character.state.update', this.currentState);
+    EventBus.publish('character.state.update', { id: this.id, currentState: this.currentState });
     return true;
   }
 
