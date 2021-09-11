@@ -2,9 +2,10 @@ import { AnimatedSprite, Ticker } from "pixi.js";
 import {
   itemTypes as ITEM_TYPES,
   audioBytes as AUDIO,
-  directions as DIRECTIONS
+  directions as DIRECTIONS,
+  characterTypes as CHARACTER_TYPES
 } from "../config/enums";
-import { EventBus, SoundModule, DataModule } from "../modules";
+import { EventBus, SoundModule, DataModule, CollisionModule } from "../modules";
 import { v4 as UUID } from 'uuid';
 
 const BASE_ACCELERATION = 1;
@@ -28,6 +29,11 @@ export default class AnimatedCharacter extends AnimatedSprite {
     this.netDps = 0; // calculation to apply damage to other entities
     this.vx = 0;
     this.vy = 0;
+    this.lastDirection = null;
+
+    // Subscribe to keyboard input for movement
+    EventBus.subscribe('movement.direction.#', this.updateLastDirection);
+    // EventBus.subscribe('#.attack', this.registerAttack);
   }
 
   getSpeed() {
@@ -48,7 +54,7 @@ export default class AnimatedCharacter extends AnimatedSprite {
 
   move(posX, posY) {
     if (this.position.x === posX && this.position.y === posY) return;
-    
+
     this.position.set(posX, posY);
     EventBus.publish('character.move', this);
   }
@@ -113,12 +119,11 @@ export default class AnimatedCharacter extends AnimatedSprite {
   }
 
   attack() {
-    let charWeapon, dpsMultiplier;
-    dpsMultiplier = this.stats.attackValue;
+    const dpsMultiplier = this.stats.attackValue;
 
     // sort available weapons and return the one equipped
     // TODO: for npc, get from other site
-    charWeapon = this.inventory.filter(item =>
+    const charWeapon = this.inventory.filter(item =>
       item.name === ITEM_TYPES.WEAPONS.AXE ||
       item.name === ITEM_TYPES.WEAPONS.MACE ||
       item.name === ITEM_TYPES.WEAPONS.SWORD
@@ -127,22 +132,11 @@ export default class AnimatedCharacter extends AnimatedSprite {
     // calculate net dps to affect other entity
     this.netDps = (charWeapon?.attackVal || 1) * dpsMultiplier;
 
-    // create attack sprite
-    // const attackSprite = new AnimatedSprite(this.testSprite, false);
-    // attackSprite.height = this.height;
-    // attackSprite.width = this.width;
-
-    // append to parent container
-    // this.parent.addChild(attackSprite);
-
-    // detect which direction the character is facing and display correct sprite
-    // WIP
-    // attackSprite.position['x'] = true ? this.position['x'] + 32 : this.position['x'];
-    // attackSprite.position['y'] = true ? this.position['y'] : this.position['y'] + 32;
-
-
     SoundModule.play(AUDIO.ATTACK);
+  }
 
+  updateLastDirection = (lastKeyboardDirection) => {
+    this.lastDirection = lastKeyboardDirection;
   }
 
   getMovementHandlers(animate = true) {
@@ -170,5 +164,16 @@ export default class AnimatedCharacter extends AnimatedSprite {
         if (animate) this.animate(DIRECTIONS.BOTTOM);
       }
     };
+  }
+
+  // Event: 'player.attack'
+  registerAttack = ({ attackArea, dps: damage }) => {
+    if (this.currentState.alive && this.characterType === CHARACTER_TYPES.TYPES.ENEMY_NPC) {
+
+      const collides = CollisionModule.hitTestRectangle(attackArea, this, true);
+
+      //inform dps to receiving entity
+      if (collides) this.takeDamage(damage);
+    }
   }
 }

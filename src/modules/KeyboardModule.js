@@ -1,3 +1,4 @@
+import { EventBus } from '.';
 import { characterActions as CHARACTER_ACTIONS, directions as DIRECTIONS } from '../config/enums';
 
 const getMovementKeys = alt => ({
@@ -42,6 +43,8 @@ export default class KeyboardModule {
         default:
           break;
       }
+
+      EventBus.publish('movement.direction.update', this.lastMovementDirection);
     });
     
     document.addEventListener('keyup', e => {
