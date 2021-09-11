@@ -1,7 +1,7 @@
 import { Ticker } from 'pixi.js';
 import AnimatedCharacter from './AnimatedCharacter';
 import { characterTypes as CHARACTER_TYPES, directions as DIRECTIONS, audioBytes as AUDIO } from '../config/enums';
-import { Utils, CollisionModule, UIModule, SoundModule } from '../modules';
+import { Utils, CollisionModule, UIModule, SoundModule, EventBus } from '../modules';
 
 const ticker = Ticker.shared;
 
@@ -17,6 +17,9 @@ export default class NPC extends AnimatedCharacter {
 
     this.registerMouseHandlers();
     this.startMoving(this.movementPattern);
+
+    // Listens to player attacks
+    EventBus.subscribe('player.attack', this.registerAttack);
   }
 
   handleInteraction(entity) {
@@ -39,6 +42,7 @@ export default class NPC extends AnimatedCharacter {
     super.takeFatalDamage();
     SoundModule.play(AUDIO.NPC_DEATH);
     UIModule.npcData.delete();
+    this.destroy();
   }
 
   startMoving({ directions, timing }) {
@@ -74,7 +78,7 @@ export default class NPC extends AnimatedCharacter {
           // move if it doesn't collide
           const newX = this.position.x + this.vx;
           const newY = this.position.y + this.vy;
-          
+
           this.move(newX, newY);
         }
 
