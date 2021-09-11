@@ -140,7 +140,7 @@ export default class Player extends AnimatedCharacter {
 
 
   registerPlayerAction(actionType, itemId) {
-    let key, action, onKeyUp;
+    let key, action;
     switch (actionType.NAME) {
       case CHARACTER_ACTIONS.ATTACK.NAME:
         key = CHARACTER_ACTIONS.ATTACK.KEY;
